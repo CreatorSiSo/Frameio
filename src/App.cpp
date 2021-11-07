@@ -25,52 +25,48 @@ App::App() {
   glGenVertexArrays(1, &m_VertexArray);
   glBindVertexArray(m_VertexArray);
 
-  glGenBuffers(1, &m_VertexBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-
   float vertices[3 * 3] = {
       // clang-format off
-    0.0f, 1.0f, 0.0f,
-    1.0f,  -1.0f, 0.0f,
-    -1.0f,  -1.0f, 0.0f
+        0.0f, 1.0f, 0.0f,
+        1.0f,  -1.0f, 0.0f,
+        -1.0f,  -1.0f, 0.0f
       // clang-format on
   };
 
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  m_VertexBuffer.reset(VertexBuffer::Create(sizeof(vertices), vertices));
+
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(float), nullptr);
 
-  glGenBuffers(1, &m_IndexBuffer);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-  unsigned int indecies[3] = {0, 1, 2};
+  uint32_t indices[3] = {0, 1, 2};
 
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indecies), indecies,
-               GL_STATIC_DRAW);
+  m_IndexBuffer.reset(
+      IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t), indices));
 
   std::string vertexSource = R"(
-    #version 330 core
+            #version 330 core
 
-    layout(location = 0) in vec3 a_Position;
+            layout(location = 0) in vec3 a_Position;
 
-    out vec3 s_Position;
+            out vec3 s_Position;
 
-    void main() {
-      s_Position = a_Position / 2 + 0.5;
-      gl_Position = vec4(a_Position / 2, 1.0);
-    }
-  )";
+            void main() {
+              s_Position = a_Position / 2 + 0.5;
+              gl_Position = vec4(a_Position / 2, 1.0);
+            }
+          )";
 
   std::string fragmentSource = R"(
-    #version 330 core
+            #version 330 core
 
-    layout(location = 0) out vec4 o_Color;
+            layout(location = 0) out vec4 o_Color;
 
-    in vec3 s_Position;
+            in vec3 s_Position;
 
-    void main() {
-      o_Color = vec4(sin(31.415 * s_Position - 1.5), 1.0);
-    }
-  )";
+            void main() {
+              o_Color = vec4(sin(31.415 * s_Position - 1.5), 1.0);
+            }
+          )";
 
   m_Shader.reset(new Shader(vertexSource, fragmentSource));
 }
@@ -84,7 +80,8 @@ void App::Run() {
 
     m_Shader->Bind();
     glBindVertexArray(m_VertexArray);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT,
+                   nullptr);
 
     // for (Layer *layer : m_LayerStack)
     //   layer->OnUpdate();

@@ -16,7 +16,10 @@ set(SOURCES
     ./src/Log.cpp
     ./src/ImGui/ImGuiBuild.cpp
     ./src/ImGui/ImGuiLayer.cpp
+    ./src/Platforms/OpenGL/OpenGLBuffer.cpp
     ./src/Platforms/OpenGL/OpenGLContext.cpp
+    ./src/Renderer/Buffer.cpp
+    ./src/Renderer/Renderer.cpp
     ./src/Renderer/Shader.cpp)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
