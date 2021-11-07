@@ -14,9 +14,10 @@ set(SOURCES
     ./src/Layer.cpp
     ./src/LayerStack.cpp
     ./src/Log.cpp
-    ./src/Platforms/OpenGL/OpenGLContext.cpp
     ./src/ImGui/ImGuiBuild.cpp
-    ./src/ImGui/ImGuiLayer.cpp)
+    ./src/ImGui/ImGuiLayer.cpp
+    ./src/Platforms/OpenGL/OpenGLContext.cpp
+    ./src/Renderer/Shader.cpp)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(PLATFORM_SOURCES ./src/Platforms/Windows/WindowsInput.cpp
