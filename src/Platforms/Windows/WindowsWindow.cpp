@@ -2,7 +2,7 @@
 
 #include "WindowsWindow.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 static bool s_GLFWInitialized = false;
 
@@ -141,4 +141,4 @@ void WindowsWindow::SetVSync(bool use) {
 
 bool WindowsWindow::IsVSync() const { return m_Data.VSync; }
 
-} // namespace Framio
+} // namespace Frameio

@@ -4,7 +4,7 @@
 
 #include "Event.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class KeyEvent : public Event {
 public:
@@ -63,4 +63,4 @@ public:
   EVENT_CLASS_TYPE(KeyTyped)
 };
 
-} // namespace Framio
+} // namespace Frameio

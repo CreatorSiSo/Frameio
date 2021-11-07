@@ -2,7 +2,7 @@
 
 #include "frpch.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class Shader {
 public:
@@ -17,4 +17,4 @@ private:
   uint32_t m_RendererID;
 };
 
-} // namespace Framio
+} // namespace Frameio

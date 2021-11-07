@@ -2,7 +2,7 @@
 
 #include "frpch.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class GraphicsContext {
 public:
@@ -12,4 +12,4 @@ public:
 private:
 };
 
-} // namespace Framio
+} // namespace Frameio

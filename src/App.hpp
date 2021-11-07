@@ -9,7 +9,7 @@
 #include "Renderer/Shader.hpp"
 #include "Window.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class App {
 public:
@@ -45,4 +45,4 @@ private:
 // Defined by client
 App *CreateApp();
 
-} // namespace Framio
+} // namespace Frameio

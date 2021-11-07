@@ -4,7 +4,7 @@
 
 #include "Events/Event.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class Input {
 public:
@@ -36,4 +36,4 @@ private:
   static Input *s_Instance;
 };
 
-} // namespace Framio
+} // namespace Frameio

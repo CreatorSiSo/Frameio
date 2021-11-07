@@ -4,7 +4,7 @@
 
 #include "Input/Input.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class MacOSInput : public Input {
 protected:
@@ -15,4 +15,4 @@ protected:
   virtual float GetMouseYImpl() override;
 };
 
-} // namespace Framio
+} // namespace Frameio

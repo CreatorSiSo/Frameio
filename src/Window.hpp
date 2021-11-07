@@ -4,7 +4,7 @@
 
 #include "Events/Event.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 struct WindowProps {
   std::string Title;
@@ -37,4 +37,4 @@ public:
   static Window *Create(const WindowProps &props = WindowProps());
 };
 
-} // namespace Framio
+} // namespace Frameio

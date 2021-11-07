@@ -5,7 +5,7 @@
 
 #include "OpenGLContext.hpp"
 
-namespace Framio {
+namespace Frameio {
 OpenGLContext::OpenGLContext(GLFWwindow *windowHandle)
     : m_WindowHandle(windowHandle) {
   FR_CORE_ASSERT(windowHandle, "Window Handle is NULL!")
@@ -25,4 +25,4 @@ void OpenGLContext::Init() {
 
 void OpenGLContext::SwapBuffers() { glfwSwapBuffers(m_WindowHandle); }
 
-} // namespace Framio
+} // namespace Frameio

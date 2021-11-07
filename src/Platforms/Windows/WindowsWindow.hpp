@@ -11,7 +11,7 @@
 #include "Platforms/OpenGL/OpenGLContext.hpp"
 #include "Window.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class WindowsWindow : public Window {
 public:
@@ -50,4 +50,4 @@ private:
   WindowData m_Data;
 };
 
-} // namespace Framio
+} // namespace Frameio

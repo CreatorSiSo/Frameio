@@ -2,7 +2,7 @@
 
 #include "Shader.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 Shader::Shader(const std::string vertexSource,
                const std::string fragmentSource) {
@@ -113,4 +113,4 @@ Shader::~Shader() { glDeleteProgram(m_RendererID); }
 void Shader::Bind() const { glUseProgram(m_RendererID); }
 void Shader::Unbind() const { glUseProgram(0); }
 
-} // namespace Framio
+} // namespace Frameio

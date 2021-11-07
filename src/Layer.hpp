@@ -4,7 +4,7 @@
 
 #include "Events/Event.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class Layer {
 public:
@@ -23,4 +23,4 @@ private:
   std::string m_DebugName;
 };
 
-} // namespace Framio
+} // namespace Frameio

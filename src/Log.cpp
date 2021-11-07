@@ -4,7 +4,7 @@
 
 #include "Log.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
@@ -19,4 +19,4 @@ void Log::Init() {
   s_ClientLogger->set_level(spdlog::level::trace);
 }
 
-} // namespace Framio
+} // namespace Frameio

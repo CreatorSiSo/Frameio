@@ -4,7 +4,7 @@
 
 #include "Layer.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class ImGuiLayer : public Layer {
 public:
@@ -22,4 +22,4 @@ private:
   float m_Time = 0.0f;
 };
 
-} // namespace Framio
+} // namespace Frameio

@@ -2,7 +2,7 @@
 
 #include "LayerStack.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 LayerStack::LayerStack() {}
 
@@ -33,4 +33,4 @@ void LayerStack::PopOverlay(Layer *overlay) {
   };
 }
 
-} // namespace Framio
+} // namespace Frameio

@@ -11,7 +11,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-namespace Framio {
+namespace Frameio {
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 ImGuiLayer::~ImGuiLayer() {}
@@ -168,11 +168,11 @@ void ImGuiLayer::End() {
 }
 
 void ImGuiLayer::OnImGuiRender() {
-  ImGui::Begin("Framio");
+  ImGui::Begin("Frameio");
   ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f),
-                     "Please override Framio::ImGuiLayer::OnImGuiRender to "
+                     "Please override Frameio::ImGuiLayer::OnImGuiRender to "
                      "display your own Gui :)");
   ImGui::End();
 }
 
-} // namespace Framio
+} // namespace Frameio

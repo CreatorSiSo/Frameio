@@ -3,7 +3,7 @@
 #include "App.hpp"
 #include "MacOSInput.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 Input *Input::s_Instance = new MacOSInput();
 
@@ -39,4 +39,4 @@ float MacOSInput::GetMouseYImpl() {
   return y;
 }
 
-} // namespace Framio
+} // namespace Frameio

@@ -6,7 +6,7 @@
 
 struct GLFWwindow;
 
-namespace Framio {
+namespace Frameio {
 
 class OpenGLContext : public GraphicsContext {
 public:
@@ -19,4 +19,4 @@ private:
   GLFWwindow *m_WindowHandle;
 };
 
-} // namespace Framio
+} // namespace Frameio

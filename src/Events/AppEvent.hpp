@@ -4,7 +4,7 @@
 
 #include "Event.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class WindowResizeEvent : public Event {
 public:
@@ -59,4 +59,4 @@ public:
   EVENT_CLASS_CATEGORY(EventCategoryApp)
 };
 
-} // namespace Framio
+} // namespace Frameio

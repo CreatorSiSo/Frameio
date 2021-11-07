@@ -4,7 +4,7 @@
 
 #include "Event.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class MouseMovedEvent : public Event {
 public:
@@ -84,4 +84,4 @@ public:
   EVENT_CLASS_TYPE(MouseButtonUp)
 };
 
-} // namespace Framio
+} // namespace Frameio

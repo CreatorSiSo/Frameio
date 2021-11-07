@@ -3,7 +3,7 @@
 #include "App.hpp"
 #include "LinuxInput.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 Input *Input::s_Instance = new LinuxInput();
 
@@ -39,4 +39,4 @@ float LinuxInput::GetMouseYImpl() {
   return y;
 }
 
-} // namespace Framio
+} // namespace Frameio

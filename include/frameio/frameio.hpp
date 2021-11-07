@@ -1,6 +1,6 @@
 #pragma once
 
-// For use by Framio applications
+// For use by Frameio applications
 
 #include "App.hpp"
 #include "Events/AppEvent.hpp"

@@ -5,7 +5,7 @@
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/spdlog.h>
 
-namespace Framio {
+namespace Frameio {
 
 class Log {
 public:
@@ -24,18 +24,18 @@ private:
   static std::shared_ptr<spdlog::logger> s_ClientLogger;
 };
 
-} // namespace Framio
+} // namespace Frameio
 
-// Framio Log macros
-#define FR_CORE_TRACE(...) ::Framio::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define FR_CORE_INFO(...) ::Framio::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define FR_CORE_WARN(...) ::Framio::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define FR_CORE_ERROR(...) ::Framio::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define FR_CORE_FATAL(...) ::Framio::Log::GetCoreLogger()->fatal(__VA_ARGS__)
+// Frameio Log macros
+#define FR_CORE_TRACE(...) ::Frameio::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define FR_CORE_INFO(...) ::Frameio::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define FR_CORE_WARN(...) ::Frameio::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define FR_CORE_ERROR(...) ::Frameio::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define FR_CORE_FATAL(...) ::Frameio::Log::GetCoreLogger()->fatal(__VA_ARGS__)
 
 // Client Log macros
-#define FR_TRACE(...) ::Framio::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define FR_INFO(...) ::Framio::Log::GetClientLogger()->info(__VA_ARGS__)
-#define FR_WARN(...) ::Framio::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define FR_ERROR(...) ::Framio::Log::GetClientLogger()->error(__VA_ARGS__)
-#define FR_FATAL(...) ::Framio::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define FR_TRACE(...) ::Frameio::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define FR_INFO(...) ::Frameio::Log::GetClientLogger()->info(__VA_ARGS__)
+#define FR_WARN(...) ::Frameio::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define FR_ERROR(...) ::Frameio::Log::GetClientLogger()->error(__VA_ARGS__)
+#define FR_FATAL(...) ::Frameio::Log::GetClientLogger()->fatal(__VA_ARGS__)

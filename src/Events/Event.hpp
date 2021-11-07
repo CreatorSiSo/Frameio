@@ -2,7 +2,7 @@
 
 #include "frpch.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 // Events are currently blocking, meaning when an event occurs it
 // immediately gets dispatched and must be dealt with right then an there.
@@ -80,4 +80,4 @@ inline std::ostream &operator<<(std::ostream &os, const Event &e) {
   return os << e.ToString();
 }
 
-} // namespace Framio
+} // namespace Frameio

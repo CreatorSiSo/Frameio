@@ -8,7 +8,7 @@
 #include "Input/Input.hpp"
 #include "Log.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 App *App::s_Instance = nullptr;
 
@@ -124,4 +124,4 @@ bool App::OnWindowClose(WindowCloseEvent &e) {
   return true;
 }
 
-} // namespace Framio
+} // namespace Frameio

@@ -3,7 +3,7 @@
 #include "App.hpp"
 #include "WindowsInput.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 Input *Input::s_Instance = new WindowsInput();
 
@@ -39,4 +39,4 @@ float WindowsInput::GetMouseYImpl() {
   return y;
 }
 
-} // namespace Framio
+} // namespace Frameio

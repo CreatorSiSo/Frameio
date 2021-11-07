@@ -2,7 +2,7 @@
 
 #include "MacOSWindow.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 static bool s_GLFWInitialized = false;
 
@@ -141,4 +141,4 @@ void MacOSWindow::SetVSync(bool use) {
 
 bool MacOSWindow::IsVSync() const { return m_Data.VSync; }
 
-} // namespace Framio
+} // namespace Frameio

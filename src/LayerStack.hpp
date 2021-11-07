@@ -4,7 +4,7 @@
 
 #include "Layer.hpp"
 
-namespace Framio {
+namespace Frameio {
 
 class LayerStack {
 public:
@@ -24,4 +24,4 @@ private:
   unsigned int m_layerInsertIndex = 0;
 };
 
-} // namespace Framio
+} // namespace Frameio

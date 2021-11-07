@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(
-  framio
+  frameio
   VERSION 0.1.0
   DESCRIPTION "A small C++ application framework."
   LANGUAGES CXX)
