@@ -6,6 +6,7 @@
 #include "Events/Event.hpp"
 #include "ImGui/ImGuiLayer.hpp"
 #include "LayerStack.hpp"
+#include "Renderer/Shader.hpp"
 #include "Window.hpp"
 
 namespace Framio {
@@ -35,6 +36,7 @@ private:
   bool m_Running = true;
 
   unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+  std::unique_ptr<Shader> m_Shader;
 
 private:
   static App *s_Instance;

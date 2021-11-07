@@ -30,9 +30,9 @@ App::App() {
 
   float vertices[3 * 3] = {
       // clang-format off
-    0.0f, 0.5f, 0.0f,
-    0.5f,  -0.5f, 0.0f,
-    -0.5f,  -0.5f, 0.0f
+    0.0f, 1.0f, 0.0f,
+    1.0f,  -1.0f, 0.0f,
+    -1.0f,  -1.0f, 0.0f
       // clang-format on
   };
 
@@ -46,6 +46,33 @@ App::App() {
 
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indecies), indecies,
                GL_STATIC_DRAW);
+
+  std::string vertexSource = R"(
+    #version 330 core
+
+    layout(location = 0) in vec3 a_Position;
+
+    out vec3 s_Position;
+
+    void main() {
+      s_Position = a_Position / 2 + 0.5;
+      gl_Position = vec4(a_Position / 2, 1.0);
+    }
+  )";
+
+  std::string fragmentSource = R"(
+    #version 330 core
+
+    layout(location = 0) out vec4 o_Color;
+
+    in vec3 s_Position;
+
+    void main() {
+      o_Color = vec4(sin(31.415 * s_Position - 1.5), 1.0);
+    }
+  )";
+
+  m_Shader.reset(new Shader(vertexSource, fragmentSource));
 }
 
 App::~App() {}
@@ -55,6 +82,7 @@ void App::Run() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    m_Shader->Bind();
     glBindVertexArray(m_VertexArray);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
