@@ -1,13 +1,13 @@
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "LinuxWindow.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 static bool s_GLFWInitialized = false;
 
 static void GLFWErrorCallbackFunction(int error, const char *description) {
-  TX_ERROR("{0} {1}", error, (std::string)description);
+  FR_ERROR("{0} {1}", error, (std::string)description);
 }
 
 LinuxWindow::LinuxWindow(const WindowProps &props) { Init(props); }
@@ -22,13 +22,13 @@ void LinuxWindow::Init(const WindowProps &props) {
   m_Data.Width = props.Width;
   m_Data.Height = props.Height;
 
-  TX_INFO("Creating Window '{0}' ({1}, {2})", m_Data.Title, m_Data.Width,
-          m_Data.Height);
+  FR_CORE_INFO("Creating Window '{0}' ({1}, {2})", m_Data.Title, m_Data.Width,
+               m_Data.Height);
 
   if (!s_GLFWInitialized) {
     // TODO: glfwTerminate on system shutdown
     int glfwInitialized = glfwInit();
-    TX_ASSERT(glfwInitialized, "Failed to intialize GLFW!");
+    FR_CORE_ASSERT(glfwInitialized, "Failed to intialize GLFW!");
     glfwSetErrorCallback(GLFWErrorCallbackFunction);
     s_GLFWInitialized = true;
   }
@@ -141,4 +141,4 @@ void LinuxWindow::SetVSync(bool use) {
 
 bool LinuxWindow::IsVSync() const { return m_Data.VSync; }
 
-} // namespace Texturia
+} // namespace Framio

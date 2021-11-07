@@ -1,6 +1,6 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -11,7 +11,7 @@
 #include "Platforms/OpenGL/OpenGLContext.hpp"
 #include "Window.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class LinuxWindow : public Window {
 public:
@@ -50,4 +50,4 @@ private:
   WindowData m_Data;
 };
 
-} // namespace Texturia
+} // namespace Framio

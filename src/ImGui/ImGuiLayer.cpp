@@ -1,4 +1,4 @@
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 //! TODO Temprorary
 #include <GLFW/glfw3.h>
@@ -6,12 +6,12 @@
 
 #include "imgui.h"
 
-#include "CoreApp.hpp"
+#include "App.hpp"
 #include "ImGuiLayer.hpp"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-namespace Texturia {
+namespace Framio {
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 ImGuiLayer::~ImGuiLayer() {}
@@ -29,9 +29,10 @@ void ImGuiLayer::OnAttach() {
   io.ConfigWindowsResizeFromEdges = true;
   io.ConfigFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
 
-  io.BackendFlags = ImGuiBackendFlags_HasMouseCursors;
-  io.BackendFlags = ImGuiBackendFlags_HasSetMousePos;
+  // io.BackendFlags = ImGuiBackendFlags_HasMouseCursors;
+  // io.BackendFlags = ImGuiBackendFlags_HasSetMousePos;
 
+  // TODO Create theme/settings (file) loading API for client app
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
   ImGuiStyle &style = ImGui::GetStyle();
@@ -117,11 +118,11 @@ void ImGuiLayer::OnAttach() {
   // 0.35f);
 
   // Setup Platform/Renderer backends
-  CoreApp &app = CoreApp::GetCoreApp();
+  App &app = App::GetApp();
   GLFWwindow *window =
       static_cast<GLFWwindow *>(app.GetWindow().GetNativeWindow());
   ImGui_ImplGlfw_InitForOpenGL(window, true);
-  ImGui_ImplOpenGL3_Init(TX_GLSL_VERSION);
+  ImGui_ImplOpenGL3_Init(FR_GLSL_VERSION);
 
   ImFontConfig fontConfig;
   fontConfig.OversampleH = 1;
@@ -129,11 +130,12 @@ void ImGuiLayer::OnAttach() {
   fontConfig.PixelSnapH = true;
   fontConfig.MergeMode = true;
 
+  // TODO Create font loading API for client app
   // TODO Use dpi for font size and dont hardcode it!!
   // https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application
   ImFont *font = io.Fonts->AddFontFromFileTTF(
       "./assets/fonts/Comfortaa/Comfortaa-Regular.ttf", 14.0f);
-  TX_ASSERT(font != NULL, "Could not load font Comfortaa-Regular!");
+  FR_CORE_ASSERT(font != NULL, "Could not load font Comfortaa-Regular!");
 }
 
 void ImGuiLayer::OnDetach() {
@@ -150,7 +152,7 @@ void ImGuiLayer::Begin() {
 
 void ImGuiLayer::End() {
   ImGuiIO &io = ImGui::GetIO();
-  CoreApp &app = CoreApp::GetCoreApp();
+  App &app = App::GetApp();
   io.DisplaySize =
       ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
 
@@ -166,48 +168,11 @@ void ImGuiLayer::End() {
 }
 
 void ImGuiLayer::OnImGuiRender() {
-  static bool test = false;
-
-  ImGui::DockSpaceOverViewport();
-
-  if (ImGui::BeginMainMenuBar()) {
-    if (ImGui::BeginMenu("File")) {
-      ImGui::MenuItem("1");
-      ImGui::EndMenu();
-    }
-
-    if (ImGui::BeginMenu("Edit")) {
-      ImGui::MenuItem("1");
-      ImGui::EndMenu();
-    }
-
-    if (ImGui::BeginMenu("View")) {
-      ImGui::MenuItem("1");
-      ImGui::EndMenu();
-    }
-
-    if (ImGui::BeginMenu("Help")) {
-      ImGui::MenuItem("1");
-      ImGui::EndMenu();
-    }
-
-    if (ImGui::BeginMenu("Platform")) {
-#ifdef TX_PLATFORM_WINDOWS
-      ImGui::MenuItem("Windows");
-#endif
-#ifdef TX_PLATFORM_LINUX
-      ImGui::MenuItem("Linux");
-#endif
-#ifdef TX_PLATFORM_MACOS
-      ImGui::MenuItem("MacOS");
-#endif
-      ImGui::EndMenu();
-    }
-
-    ImGui::EndMainMenuBar();
-  }
-
-  ImGui::ShowDemoWindow();
+  ImGui::Begin("Framio");
+  ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f),
+                     "Please override Framio::ImGuiLayer::OnImGuiRender to "
+                     "display your own Gui :)");
+  ImGui::End();
 }
 
-} // namespace Texturia
+} // namespace Framio

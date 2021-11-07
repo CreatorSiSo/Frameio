@@ -1,33 +1,31 @@
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 //! TODO Temprorary
 #include <glad/glad.h>
 
-#include "CoreApp.hpp"
+#include "App.hpp"
 #include "ImGui/ImGuiLayer.hpp"
 #include "Input/Input.hpp"
+#include "Log.hpp"
 
-namespace Texturia {
+namespace Framio {
 
-CoreApp *CoreApp::s_Instance = nullptr;
+App *App::s_Instance = nullptr;
 
-CoreApp::CoreApp() {
-  Log::Init();
-  TX_INFO("Initialized Logger");
-
-  TX_ASSERT(!s_Instance, "CoreApp already exists!");
+App::App() {
+  FR_CORE_ASSERT(!s_Instance, "App already exists!");
   s_Instance = this;
 
   m_Window = std::unique_ptr<Window>(Window::Create());
-  m_Window->SetEventCallback(TX_BIND_EVENT_FN(CoreApp::OnEvent));
+  m_Window->SetEventCallback(FR_BIND_EVENT_FN(App::OnEvent));
 
   m_ImGuiLayer = new ImGuiLayer();
   PushOverlay(m_ImGuiLayer);
 }
 
-CoreApp::~CoreApp() {}
+App::~App() {}
 
-void CoreApp::Run() {
+void App::Run() {
   while (m_Running) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -37,29 +35,26 @@ void CoreApp::Run() {
 
     m_ImGuiLayer->Begin();
     for (Layer *layer : m_LayerStack)
-      m_ImGuiLayer->OnImGuiRender();
+      layer->OnImGuiRender();
     m_ImGuiLayer->End();
 
     m_Window->OnUpdate();
   }
 }
 
-void CoreApp::PushLayer(Layer *layer) {
+void App::PushLayer(Layer *layer) {
   m_LayerStack.PushLayer(layer);
   layer->OnAttach();
 }
 
-void CoreApp::PushOverlay(Layer *overlay) {
+void App::PushOverlay(Layer *overlay) {
   m_LayerStack.PushOverlay(overlay);
   overlay->OnAttach();
 }
 
-void CoreApp::OnEvent(Event &e) {
+void App::OnEvent(Event &e) {
   EventDispatcher dispatcher(e);
-  dispatcher.Dispatch<WindowCloseEvent>(
-      TX_BIND_EVENT_FN(CoreApp::OnWindowClose));
-
-  TX_TRACE("{0}", e);
+  dispatcher.Dispatch<WindowCloseEvent>(FR_BIND_EVENT_FN(App::OnWindowClose));
 
   for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
     (*--it)->OnEvent(e);
@@ -68,11 +63,9 @@ void CoreApp::OnEvent(Event &e) {
   }
 }
 
-bool CoreApp::OnWindowClose(WindowCloseEvent &e) {
+bool App::OnWindowClose(WindowCloseEvent &e) {
   m_Running = false;
   return true;
 }
 
-CoreApp *CreateCoreApp() { return new CoreApp; }
-
-} // namespace Texturia
+} // namespace Framio

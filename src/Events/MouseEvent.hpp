@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Event.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class MouseMovedEvent : public Event {
 public:
@@ -84,4 +84,4 @@ public:
   EVENT_CLASS_TYPE(MouseButtonUp)
 };
 
-} // namespace Texturia
+} // namespace Framio

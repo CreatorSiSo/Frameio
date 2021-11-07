@@ -1,8 +1,8 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 // Events are currently blocking, meaning when an event occurs it
 // immediately gets dispatched and must be dealt with right then an there.
@@ -80,4 +80,4 @@ inline std::ostream &operator<<(std::ostream &os, const Event &e) {
   return os << e.ToString();
 }
 
-} // namespace Texturia
+} // namespace Framio

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Renderer/GraphicsContext.hpp"
 
 struct GLFWwindow;
 
-namespace Texturia {
+namespace Framio {
 
 class OpenGLContext : public GraphicsContext {
 public:
@@ -19,4 +19,4 @@ private:
   GLFWwindow *m_WindowHandle;
 };
 
-} // namespace Texturia
+} // namespace Framio

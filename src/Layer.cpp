@@ -1,16 +1,10 @@
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Layer.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 Layer::Layer(const std::string &debugName) : m_DebugName(debugName) {}
 Layer::~Layer() {}
 
-void Layer::OnAttach() {}
-void Layer::OnDetach() {}
-void Layer::OnUpdate() {}
-void Layer::OnImGuiRender() {}
-void Layer::OnEvent(Event &e) {}
-
-} // namespace Texturia
+} // namespace Framio

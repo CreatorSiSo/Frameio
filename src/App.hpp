@@ -1,6 +1,6 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Events/AppEvent.hpp"
 #include "Events/Event.hpp"
@@ -8,12 +8,12 @@
 #include "LayerStack.hpp"
 #include "Window.hpp"
 
-namespace Texturia {
+namespace Framio {
 
-class CoreApp {
+class App {
 public:
-  CoreApp();
-  ~CoreApp();
+  App();
+  virtual ~App();
 
   void Run();
 
@@ -22,21 +22,23 @@ public:
   void PushLayer(Layer *layer);
   void PushOverlay(Layer *overlay);
 
-  inline static CoreApp &GetCoreApp() { return *s_Instance; }
+  inline static App &GetApp() { return *s_Instance; }
   inline Window &GetWindow() { return *m_Window; }
 
 private:
   bool OnWindowClose(WindowCloseEvent &e);
 
-  static CoreApp *s_Instance;
   std::unique_ptr<Window> m_Window;
-
   LayerStack m_LayerStack;
   ImGuiLayer *m_ImGuiLayer;
 
   bool m_Running = true;
+
+private:
+  static App *s_Instance;
 };
 
-CoreApp *CreateCoreApp();
+// Defined by client
+App *CreateApp();
 
-} // namespace Texturia
+} // namespace Framio

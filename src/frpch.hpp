@@ -1,9 +1,9 @@
 #pragma once
 
-/* Defines/Config */
+// Defines/Config
 #include "Defines.hpp"
 
-/* Standard */
+// Standard
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -17,8 +17,8 @@
 #include <unordered_set>
 #include <vector>
 
-/* External */
+// External
 #include <debugbreak.h>
 
-/* Internal */
+// Internal
 #include "Log.hpp"

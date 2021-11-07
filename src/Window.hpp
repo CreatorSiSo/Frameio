@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Events/Event.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 struct WindowProps {
   std::string Title;
@@ -37,4 +37,4 @@ public:
   static Window *Create(const WindowProps &props = WindowProps());
 };
 
-} // namespace Texturia
+} // namespace Framio

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Events/Event.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class Input {
 public:
@@ -36,4 +36,4 @@ private:
   static Input *s_Instance;
 };
 
-} // namespace Texturia
+} // namespace Framio

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Input/Input.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class WindowsInput : public Input {
 protected:
@@ -15,4 +15,4 @@ protected:
   virtual float GetMouseYImpl() override;
 };
 
-} // namespace Texturia
+} // namespace Framio

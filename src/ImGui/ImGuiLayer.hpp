@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Layer.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class ImGuiLayer : public Layer {
 public:
@@ -22,4 +22,4 @@ private:
   float m_Time = 0.0f;
 };
 
-} // namespace Texturia
+} // namespace Framio

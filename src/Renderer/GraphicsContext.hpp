@@ -1,8 +1,8 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class GraphicsContext {
 public:
@@ -12,4 +12,4 @@ public:
 private:
 };
 
-} // namespace Texturia
+} // namespace Framio

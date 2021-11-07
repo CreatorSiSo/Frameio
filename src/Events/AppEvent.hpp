@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Event.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class WindowResizeEvent : public Event {
 public:
@@ -59,4 +59,4 @@ public:
   EVENT_CLASS_CATEGORY(EventCategoryApp)
 };
 
-} // namespace Texturia
+} // namespace Framio

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "Layer.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 class LayerStack {
 public:
@@ -24,4 +24,4 @@ private:
   unsigned int m_layerInsertIndex = 0;
 };
 
-} // namespace Texturia
+} // namespace Framio

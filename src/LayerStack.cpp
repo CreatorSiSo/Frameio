@@ -1,8 +1,8 @@
-#include "txpch.hpp"
+#include "frpch.hpp"
 
 #include "LayerStack.hpp"
 
-namespace Texturia {
+namespace Framio {
 
 LayerStack::LayerStack() {}
 
@@ -33,4 +33,4 @@ void LayerStack::PopOverlay(Layer *overlay) {
   };
 }
 
-} // namespace Texturia
+} // namespace Framio
