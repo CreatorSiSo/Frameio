@@ -95,15 +95,9 @@ void App::Run() {
   }
 }
 
-void App::PushLayer(Layer *layer) {
-  m_LayerStack.PushLayer(layer);
-  layer->OnAttach();
-}
+void App::PushLayer(Layer *layer) { m_LayerStack.PushLayer(layer); }
 
-void App::PushOverlay(Layer *overlay) {
-  m_LayerStack.PushOverlay(overlay);
-  overlay->OnAttach();
-}
+void App::PushOverlay(Layer *overlay) { m_LayerStack.PushOverlay(overlay); }
 
 void App::OnEvent(Event &e) {
   EventDispatcher dispatcher(e);
