@@ -7,8 +7,8 @@
 #define FR_CORE_ASSERT(x, ...)                                                 \
   {                                                                            \
     if (!(x)) {                                                                \
-      FR_ERROR("[{1}:{2}] Assertion Failed: {0}", __VA_ARGS__, __FILE__,       \
-               __LINE__);                                                      \
+      FR_CORE_ERROR("[{1}:{2}] Assertion Failed: {0}", __VA_ARGS__, __FILE__,  \
+                    __LINE__);                                                 \
       debug_break();                                                           \
     }                                                                          \
   }
