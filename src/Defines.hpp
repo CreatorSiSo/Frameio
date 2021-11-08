@@ -19,6 +19,8 @@
 #define FR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 #define BIT(x) (1 << x)
+#define TO_CONST_VOID_P(x) (const void *)(size_t) x
+#define TO_VOID_P(x) (void *)(size_t) x
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #define GLFW_INCLUDE_NONE

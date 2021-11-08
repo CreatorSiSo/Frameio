@@ -71,7 +71,7 @@ App::App() {
     glVertexAttribPointer(index, element.GetComponentCount(),
                           ShaderDataTypeToOpenGLBaseType(element.Type),
                           element.Normalized ? GL_TRUE : GL_FALSE,
-                          layout.GetStride(), (const void *)element.Offset);
+                          layout.GetStride(), TO_CONST_VOID_P(element.Offset));
     index++;
   }
 
@@ -112,8 +112,6 @@ App::App() {
 
   m_Shader.reset(new Shader(vertexSource, fragmentSource));
 }
-
-App::~App() {}
 
 void App::Run() {
   while (m_Running) {

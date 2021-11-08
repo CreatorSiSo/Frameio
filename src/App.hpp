@@ -15,7 +15,7 @@ namespace Frameio {
 class App {
 public:
   App();
-  virtual ~App();
+  virtual ~App() = default;
 
   void Run();
 

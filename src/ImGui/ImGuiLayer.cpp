@@ -14,7 +14,6 @@
 namespace Frameio {
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
-ImGuiLayer::~ImGuiLayer() {}
 
 void ImGuiLayer::OnAttach() {
   IMGUI_CHECKVERSION();
