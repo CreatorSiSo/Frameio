@@ -167,12 +167,6 @@ void ImGuiLayer::End() {
   }
 }
 
-void ImGuiLayer::OnImGuiRender() {
-  ImGui::Begin("Frameio");
-  ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f),
-                     "Please override Frameio::ImGuiLayer::OnImGuiRender to "
-                     "display your own Gui :)");
-  ImGui::End();
-}
+void ImGuiLayer::OnImGuiRender() {}
 
 } // namespace Frameio
