@@ -1,8 +1,5 @@
 #include "frpch.hpp"
 
-//! TODO Temprorary
-#include <glad/glad.h>
-
 #include <glm/glm.hpp>
 
 #include "App.hpp"

@@ -2,9 +2,8 @@
 
 //! TODO Temprorary
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 
-#include "imgui.h"
+#include <imgui.h>
 
 #include "App.hpp"
 #include "ImGuiLayer.hpp"
