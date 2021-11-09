@@ -1,15 +1,16 @@
 #include "Renderer/VertexArray.hpp"
 #include "Platforms/OpenGL/OpenGLVertexArray.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Renderer/RendererAPI.hpp"
 
 namespace Frameio {
 
 VertexArray *VertexArray::Create() {
-  switch (Renderer::GetCurrentAPI()) {
-  case RendererAPI::None:
+  switch (Renderer::GetAPI()) {
+  case RendererAPI::API::None:
     FR_CORE_ASSERT(false, "RendererAPI::None is currently not supported!")
     return nullptr;
-  case RendererAPI::OpenGL:
+  case RendererAPI::API::OpenGL:
     return new OpenGLVertexArray();
   }
 

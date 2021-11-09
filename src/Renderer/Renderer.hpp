@@ -2,16 +2,19 @@
 
 #include "frpch.hpp"
 
-namespace Frameio {
+#include "Renderer/RenderCommand.hpp"
+#include "Renderer/VertexArray.hpp"
 
-enum class RendererAPI { None = 0, OpenGL = 1 };
+namespace Frameio {
 
 class Renderer {
 public:
-  inline static RendererAPI GetCurrentAPI() { return s_RendererAPI; }
+  static void BeginScene();
+  static void EndScene();
 
-private:
-  static RendererAPI s_RendererAPI;
+  static void Submit(const std::shared_ptr<VertexArray> &vertexArray);
+
+  inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 };
 
 } // namespace Frameio

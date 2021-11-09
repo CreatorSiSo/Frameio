@@ -1,6 +1,3 @@
-#include "frpch.hpp"
-
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 #include "OpenGLContext.hpp"

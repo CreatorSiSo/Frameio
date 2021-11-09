@@ -3,10 +3,13 @@
 //! TODO Temprorary
 #include <glad/glad.h>
 
+#include <glm/glm.hpp>
+
 #include "App.hpp"
 #include "ImGui/ImGuiLayer.hpp"
 #include "Input/Input.hpp"
 #include "Log.hpp"
+#include "Renderer/Renderer.hpp"
 
 namespace Frameio {
 
@@ -115,19 +118,16 @@ App::App() {
 
 void App::Run() {
   while (m_Running) {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f});
+    RenderCommand::Clear();
 
+    Renderer::BeginScene();
     m_Shader->Bind();
-    m_SquareVertexArray->Bind();
-    glDrawElements(GL_TRIANGLES,
-                   m_SquareVertexArray->GetIndexBuffer()->GetCount(),
-                   GL_UNSIGNED_INT, nullptr);
 
-    m_TriangleVertexArray->Bind();
-    glDrawElements(GL_TRIANGLES,
-                   m_TriangleVertexArray->GetIndexBuffer()->GetCount(),
-                   GL_UNSIGNED_INT, nullptr);
+    Renderer::Submit(m_SquareVertexArray);
+    Renderer::Submit(m_TriangleVertexArray);
+
+    Renderer::EndScene();
 
     // for (Layer *layer : m_LayerStack)
     //   layer->OnUpdate();

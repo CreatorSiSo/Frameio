@@ -16,13 +16,16 @@ set(SOURCES
     ./src/Log.cpp
     ./src/ImGui/ImGuiBuild.cpp
     ./src/ImGui/ImGuiLayer.cpp
+    ./src/Renderer/Buffer.cpp
+    ./src/Renderer/Renderer.cpp
+    ./src/Renderer/RendererAPI.cpp
+    ./src/Renderer/RenderCommand.cpp
+    ./src/Renderer/Shader.cpp
+    ./src/Renderer/VertexArray.cpp
     ./src/Platforms/OpenGL/OpenGLBuffer.cpp
     ./src/Platforms/OpenGL/OpenGLContext.cpp
     ./src/Platforms/OpenGL/OpenGLVertexArray.cpp
-    ./src/Renderer/Buffer.cpp
-    ./src/Renderer/Renderer.cpp
-    ./src/Renderer/Shader.cpp
-    ./src/Renderer/VertexArray.cpp)
+    ./src/Platforms/OpenGL/OpenGLRendererAPI.cpp)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(PLATFORM_SOURCES ./src/Platforms/Windows/WindowsInput.cpp

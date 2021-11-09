@@ -2,6 +2,8 @@
 
 #include "frpch.hpp"
 
+#include <GLFW/glfw3.h>
+
 #include "Renderer/GraphicsContext.hpp"
 
 struct GLFWwindow;
