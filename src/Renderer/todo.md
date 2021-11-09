@@ -29,3 +29,5 @@
   - [ ] Set/GetRot(vec3?/quat?/euler?)
 
 - [ ] abstract shader binding away into Renderer::Submit()
+
+- [ ] Initialize member variables correctly!!! glm does not do that for you
