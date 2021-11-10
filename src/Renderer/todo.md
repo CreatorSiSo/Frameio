@@ -28,7 +28,7 @@
   - [ ] init(FOV, near, far)
   - [ ] Set/GetRot(vec3?/quat?/euler?)
 
-- [ ] abstract shader binding away into Renderer::Submit()
+- [x] abstract shader binding away into Renderer::Submit()
 
 - [ ] Initialize member variables correctly!!! glm does not do that for you
 

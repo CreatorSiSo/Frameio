@@ -38,6 +38,7 @@ private:
   bool m_Running = true;
 
   std::shared_ptr<Shader> m_Shader;
+  std::shared_ptr<Shader> m_ShaderPos;
   std::shared_ptr<VertexArray> m_TriangleVertexArray;
   std::shared_ptr<VertexArray> m_SquareVertexArray;
 

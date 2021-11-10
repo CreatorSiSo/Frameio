@@ -110,7 +110,21 @@ App::App() {
             }
           )";
 
+  std::string fragmentSourcePos = R"(
+            #version 330 core
+
+            layout(location = 0) out vec4 o_Color;
+
+            in vec3 s_Position;
+            in vec4 s_Color;
+
+            void main() {
+              o_Color = mix(s_Color, vec4(s_Position, 1.0), 0.3);
+            }
+          )";
+
   m_Shader.reset(new Shader(vertexSource, fragmentSource));
+  m_ShaderPos.reset(new Shader(vertexSource, fragmentSourcePos));
 }
 
 void App::Run() {
@@ -119,10 +133,9 @@ void App::Run() {
     RenderCommand::Clear();
 
     Renderer::BeginScene();
-    m_Shader->Bind();
 
-    Renderer::Submit(m_SquareVertexArray);
-    Renderer::Submit(m_TriangleVertexArray);
+    Renderer::Submit(m_SquareVertexArray, m_Shader);
+    Renderer::Submit(m_TriangleVertexArray, m_ShaderPos);
 
     Renderer::EndScene();
 
