@@ -21,6 +21,9 @@ enum class ShaderDataType {
 
 static uint32_t ShaderDataTypeSize(ShaderDataType type) {
   switch (type) {
+  case ShaderDataType::None:
+    FR_CORE_ASSERT(false, "Your ShaderDataType is None which has no size!")
+    return 0;
   case ShaderDataType::Float:
     return 4;
   case ShaderDataType::Float2:
@@ -65,6 +68,10 @@ struct BufferElement {
 
   uint32_t GetComponentCount() const {
     switch (Type) {
+    case ShaderDataType::None:
+      FR_CORE_ASSERT(false,
+                     "Your ShaderDataType is None which has no components!")
+      return 0;
     case ShaderDataType::Float:
       return 1;
     case ShaderDataType::Float2:
@@ -111,8 +118,14 @@ public:
 
   std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
   std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
-  std::vector<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
-  std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
+
+  std::vector<BufferElement>::const_iterator begin() const {
+    return m_Elements.begin();
+  }
+
+  std::vector<BufferElement>::const_iterator end() const {
+    return m_Elements.end();
+  }
 
 private:
   void CalculateOffsetsAndStride() {
