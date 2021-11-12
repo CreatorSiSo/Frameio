@@ -6,6 +6,9 @@ namespace Frameio {
 
 static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
   switch (type) {
+  case ShaderDataType::None:
+    FR_CORE_ASSERT(false, "Your ShaderDataType is None which has no type!")
+    return GL_NONE;
   case ShaderDataType::Float:
   case ShaderDataType::Float2:
   case ShaderDataType::Float3:
@@ -26,9 +29,7 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
   return 0;
 }
 
-OpenGLVertexArray::OpenGLVertexArray() {
-  glCreateVertexArrays(1, &m_RendererID);
-}
+OpenGLVertexArray::OpenGLVertexArray() { glGenVertexArrays(1, &m_RendererID); }
 
 OpenGLVertexArray::~OpenGLVertexArray() {
   glDeleteVertexArrays(1, &m_RendererID);
