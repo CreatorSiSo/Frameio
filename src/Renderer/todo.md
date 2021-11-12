@@ -28,6 +28,13 @@
   - [ ] init(FOV, near, far)
   - [ ] Set/GetRot(vec3?/quat?/euler?)
 
-- [ ] abstract shader binding away into Renderer::Submit()
+- [x] abstract shader binding away into Renderer::Submit()
 
 - [ ] Initialize member variables correctly!!! glm does not do that for you
+
+- Think about loading shaders and passing them to the renderer:
+  - crosscompiling?
+  - what shader languages to support?
+  - watching shader files
+    - only recompile shaders that changed
+    - how to handle caching?
