@@ -1,6 +1,7 @@
 - [ ] Renderer::BeginScene(cameradata)
 
 - [ ] Shader::UpdloadUniformMat4(mat4)
+  - [ ] use uniform buffers and not just uniforms
   - [ ] use this to make Renderer::BeginScene() actually upload the camera
 
 - [ ] CameraGeneral:
