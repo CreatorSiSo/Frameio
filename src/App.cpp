@@ -129,23 +129,23 @@ App::App() {
 
 void App::Run() {
   while (m_Running) {
-    RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f});
+    RenderCommand::SetClearColor({0.09f, 0.09f, 0.09f, 1.0f});
     RenderCommand::Clear();
 
-    Renderer::BeginScene();
+    // Renderer::BeginScene();
 
-    Renderer::Submit(m_SquareVertexArray, m_Shader);
-    Renderer::Submit(m_TriangleVertexArray, m_ShaderPos);
+    // Renderer::Submit(m_SquareVertexArray, m_Shader);
+    // Renderer::Submit(m_TriangleVertexArray, m_ShaderPos);
 
-    Renderer::EndScene();
+    // Renderer::EndScene();
 
-    // for (Layer *layer : m_LayerStack)
-    //   layer->OnUpdate();
+    for (Layer *layer : m_LayerStack)
+      layer->OnUpdate();
 
-    // m_ImGuiLayer->Begin();
-    // for (Layer *layer : m_LayerStack)
-    //   layer->OnImGuiRender();
-    // m_ImGuiLayer->End();
+    m_ImGuiLayer->Begin();
+    for (Layer *layer : m_LayerStack)
+      layer->OnImGuiRender();
+    m_ImGuiLayer->End();
 
     m_Window->OnUpdate();
   }
