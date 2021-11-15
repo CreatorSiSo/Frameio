@@ -11,8 +11,8 @@ struct WindowProps {
   int Width;
   int Height;
 
-  WindowProps(const std::string &title = "Texturia", unsigned int width = 1200,
-              unsigned int height = 700)
+  WindowProps(const std::string &title = "Texturia", unsigned int width = 1280,
+              unsigned int height = 720)
       : Title(title), Width(width), Height(height) {}
 };
 
