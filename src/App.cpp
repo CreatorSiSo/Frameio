@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
 #include "App.hpp"
@@ -130,38 +131,40 @@ App::App() : m_Camera(-1.6f, 1.6f, -0.9f, 0.9f) {
 
 void App::Run() {
   float animSpeed = 0.5f / 10;
-  while (m_Running) {
-    if (Input::IsKeyDown(FR_KEY_W)) {
-      m_Camera.SetPosition(m_Camera.GetPosition() +
-                           glm::vec3(0.0f, -animSpeed, 0.0f));
-    }
-    if (Input::IsKeyDown(FR_KEY_S)) {
-      m_Camera.SetPosition(m_Camera.GetPosition() +
-                           glm::vec3(0.0f, animSpeed, 0.0f));
-    }
-    if (Input::IsKeyDown(FR_KEY_A)) {
-      m_Camera.SetPosition(m_Camera.GetPosition() +
-                           glm::vec3(animSpeed, 0.0f, 0.0f));
-    }
-    if (Input::IsKeyDown(FR_KEY_D)) {
-      m_Camera.SetPosition(m_Camera.GetPosition() +
-                           glm::vec3(-animSpeed, 0.0f, 0.0f));
-    }
-    m_Camera.SetRotation(glm::orientedAngle(
-        glm::vec2(0.0f, -1.0f),
-        glm::normalize(glm::vec2(Input::GetMouseX() / 1280 * 2 - 1,
-                                 Input::GetMouseY() / 720 * 2 - 1))));
+  int animTime = 0;
+  float cameraSpeed = 0.04f;
 
-    // FR_CORE_TRACE("{0}, {1}",
-    // Input::GetMouseX() / 1280 * 2 - 1,
-    //               Input::GetMouseY() / 720 * 2
-    //               - 1);
-    // FR_CORE_TRACE("{0}",
-    //               glm::orientedAngle(glm::vec2(0.0f),
-    //                                  glm::normalize(glm::vec2(
-    //                                      Input::GetMouseX() / 1280 * 2 - 1,
-    //                                      Input::GetMouseY() / 720 * 2 -
-    //                                      1))));
+  while (m_Running) {
+    animTime++;
+
+    // clang-format off
+    glm::vec3 cameraMoveDirection = glm::rotateZ(
+      glm::vec3(0.0f, cameraSpeed, 0.0f),
+      glm::pi<float>() - glm::orientedAngle(
+        glm::normalize(glm::vec2(0.0f, 1.0f)),
+        glm::normalize(glm::vec2(
+          Input::GetMouseX() / m_Window->GetWidth() * 2 - 1,
+          Input::GetMouseY() / m_Window->GetHeight() * 2 - 1)
+        )
+      )
+    );
+
+    if (Input::IsKeyDown(FR_KEY_W))
+      m_Camera.SetPosition(m_Camera.GetPosition() + cameraMoveDirection);
+    if (Input::IsKeyDown(FR_KEY_A))
+      m_Camera.SetPosition(m_Camera.GetPosition() + glm::vec3(-cameraSpeed, 0.0f, 0.0f) /* glm::rotateZ(cameraMoveDirection, glm::half_pi<float>()) */);
+    if (Input::IsKeyDown(FR_KEY_S))
+      m_Camera.SetPosition(m_Camera.GetPosition() + glm::rotateZ(cameraMoveDirection, glm::pi<float>()));
+    if (Input::IsKeyDown(FR_KEY_D))
+      m_Camera.SetPosition(m_Camera.GetPosition() + glm::vec3(cameraSpeed, 0.0f, 0.0f) /* glm::rotateZ(cameraMoveDirection, -glm::half_pi<float>()) */);
+    // clang-format on
+
+    // m_Camera.SetRotation(glm::degrees(glm::orientedAngle(
+    //     glm::vec2(0.0f, -1.0f),
+    //     glm::normalize(glm::vec2(Input::GetMouseX() / 1280 * 2 - 1,
+    //                              Input::GetMouseY() / 720 * 2 - 1)))));
+
+    m_Camera.SetRotation(glm::sin(animTime / 16));
 
     RenderCommand::SetClearColor({0.09f, 0.09f, 0.09f, 1.0f});
     RenderCommand::Clear();
@@ -176,10 +179,10 @@ void App::Run() {
     for (Layer *layer : m_LayerStack)
       layer->OnUpdate();
 
-    // m_ImGuiLayer->Begin();
-    // for (Layer *layer : m_LayerStack)
-    //   layer->OnImGuiRender();
-    // m_ImGuiLayer->End();
+    m_ImGuiLayer->Begin();
+    for (Layer *layer : m_LayerStack)
+      layer->OnImGuiRender();
+    m_ImGuiLayer->End();
 
     m_Window->OnUpdate();
   }

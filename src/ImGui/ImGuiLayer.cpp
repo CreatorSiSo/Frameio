@@ -105,7 +105,7 @@ void ImGuiLayer::OnAttach() {
   colors[ImGuiCol_TabUnfocused] = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
   colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
   colors[ImGuiCol_DockingPreview] = ImVec4(1.00f, 0.49f, 0.29f, 0.78f);
-  colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.09f, 0.09f, 0.09f, 1.00f);
+  colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.09f, 0.09f, 0.09f, 0.00f);
   colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
   colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.52f, 0.33f, 1.00f);
   colors[ImGuiCol_PlotHistogram] = ImVec4(0.98f, 0.71f, 0.06f, 1.00f);
