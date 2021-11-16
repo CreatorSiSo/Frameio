@@ -2,11 +2,11 @@
 
 #include "frpch.hpp"
 
+#include "Core/LayerStack.hpp"
+#include "Core/Window.hpp"
 #include "Events/AppEvent.hpp"
 #include "Events/Event.hpp"
 #include "ImGui/ImGuiLayer.hpp"
-#include "LayerStack.hpp"
-#include "Window.hpp"
 
 namespace Frameio {
 

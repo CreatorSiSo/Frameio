@@ -1,6 +1,6 @@
 #include <GLFW/glfw3.h>
 
-#include "App.hpp"
+#include "Core/App.hpp"
 #include "MacOSInput.hpp"
 
 namespace Frameio {

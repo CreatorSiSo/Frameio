@@ -1,7 +1,7 @@
 #pragma once
 
 // Defines/Config
-#include "Defines.hpp"
+#include "Core/Defines.hpp"
 
 // Standard
 #include <algorithm>
@@ -21,4 +21,4 @@
 #include <debugbreak.h>
 
 // Internal
-#include "Log.hpp"
+#include "Core/Log.hpp"

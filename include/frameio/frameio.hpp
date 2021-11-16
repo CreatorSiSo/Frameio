@@ -2,9 +2,9 @@
 
 // For use by Frameio applications
 
-#include "App.hpp"
+#include "Core/App.hpp"
+#include "Core/Log.hpp"
 #include "Core/Time.hpp"
-#include "Log.hpp"
 
 #include "Events/AppEvent.hpp"
 #include "Events/Event.hpp"
@@ -23,7 +23,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/VertexArray.hpp"
 
+#include "Core/Layer.hpp"
 #include "ImGui/ImGuiLayer.hpp"
-#include "Layer.hpp"
 
-#include "EntryPoint.hpp"
+#include "Core/EntryPoint.hpp"

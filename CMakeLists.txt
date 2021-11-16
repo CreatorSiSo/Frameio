@@ -10,10 +10,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 # Source Files
 set(SOURCES
-    ./src/App.cpp
-    ./src/Layer.cpp
-    ./src/LayerStack.cpp
-    ./src/Log.cpp
+    ./src/Core/App.cpp
+    ./src/Core/Layer.cpp
+    ./src/Core/LayerStack.cpp
+    ./src/Core/Log.cpp
     ./src/ImGui/ImGuiBuild.cpp
     ./src/ImGui/ImGuiLayer.cpp
     ./src/Renderer/Buffer.cpp

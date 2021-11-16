@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "App.hpp"
+#include "Core/App.hpp"
 #include "Input/Input.hpp"
 
 namespace Frameio {
