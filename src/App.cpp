@@ -1,5 +1,6 @@
 #include "frpch.hpp"
 
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 #include "App.hpp"
@@ -22,8 +23,13 @@ App::App() {
 
 void App::Run() {
   while (m_Running) {
+    // TODO Move into Platforms/...
+    float time = (float)glfwGetTime();
+    RealDeltaTime realDeltaTime = time - m_LastFrameTime;
+    m_LastFrameTime = time;
+
     for (Layer *layer : m_LayerStack)
-      layer->OnUpdate();
+      layer->OnUpdate(realDeltaTime);
 
     m_ImGuiLayer->Begin();
     for (Layer *layer : m_LayerStack)

@@ -30,6 +30,7 @@ private:
 
 private:
   bool m_Running = true;
+  float m_LastFrameTime = 0.0f;
 
   std::unique_ptr<Window> m_Window;
   LayerStack m_LayerStack;

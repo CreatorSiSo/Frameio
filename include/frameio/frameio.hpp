@@ -3,6 +3,7 @@
 // For use by Frameio applications
 
 #include "App.hpp"
+#include "Core/Time.hpp"
 #include "Log.hpp"
 
 #include "Events/AppEvent.hpp"

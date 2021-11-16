@@ -17,9 +17,6 @@ public:
 
   void Begin();
   void End();
-
-private:
-  float m_Time = 0.0f;
 };
 
 } // namespace Frameio

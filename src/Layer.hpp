@@ -2,6 +2,7 @@
 
 #include "frpch.hpp"
 
+#include "Core/Time.hpp"
 #include "Events/Event.hpp"
 
 namespace Frameio {
@@ -13,7 +14,7 @@ public:
 
   virtual void OnAttach() {}
   virtual void OnDetach() {}
-  virtual void OnUpdate() {}
+  virtual void OnUpdate(RealDeltaTime realDeltaTime) {}
   virtual void OnImGuiRender() {}
   virtual void OnEvent(Event &e) {}
 
