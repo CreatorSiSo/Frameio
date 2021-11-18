@@ -16,6 +16,7 @@ set(SOURCES
     ./src/Core/Log.cpp
     ./src/ImGui/ImGuiBuild.cpp
     ./src/ImGui/ImGuiLayer.cpp
+    ./src/ImGui/Components/Widgets.cpp
     ./src/Renderer/Buffer.cpp
     ./src/Renderer/Camera.cpp
     ./src/Renderer/Renderer.cpp
