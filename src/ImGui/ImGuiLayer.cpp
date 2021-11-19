@@ -73,9 +73,9 @@ void ImGuiLayer::OnAttach() {
   colors[ImGuiCol_PopupBg] = ImVec4(0.09f, 0.09f, 0.09f, 0.86f);
   colors[ImGuiCol_Border] = ImVec4(0.24f, 0.24f, 0.24f, 0.67f);
   colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-  colors[ImGuiCol_FrameBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
-  colors[ImGuiCol_FrameBgHovered] = ImVec4(0.21f, 0.21f, 0.21f, 1.00f);
-  colors[ImGuiCol_FrameBgActive] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+  colors[ImGuiCol_FrameBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+  colors[ImGuiCol_FrameBgHovered] = ImVec4(0.22f, 0.22f, 0.21f, 1.00f);
+  colors[ImGuiCol_FrameBgActive] = ImVec4(0.11f, 0.11f, 0.11f, 1.00f);
   colors[ImGuiCol_TitleBg] = ImVec4(0.11f, 0.11f, 0.11f, 1.00f);
   colors[ImGuiCol_TitleBgActive] = ImVec4(0.11f, 0.11f, 0.11f, 1.00f);
   colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.11f, 0.11f, 0.11f, 1.00f);

@@ -30,11 +30,10 @@ bool ImGui::DragFloat3(const char *label, glm::vec3 &value, float reset_value,
 
   float lineHeight =
       GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-  ImVec2 itemSpacing = {0.0f, GImGui->Style.ItemSpacing.y};
   ImVec2 buttonSize = {lineHeight + 2.0f, lineHeight};
+  PushStyleVar(ImGuiStyleVar_ItemSpacing, {0.0f, GImGui->Style.ItemSpacing.y});
 
   //* X Component
-  PushStyleVar(ImGuiStyleVar_ItemSpacing, itemSpacing);
   { /* Reset Button X */
     //? TODO Move hardcoded colors into general color theme
     PushStyleColor(ImGuiCol_Button, ImVec4(0.72f, 0.24f, 0.24f, 1.0f));
@@ -52,44 +51,40 @@ bool ImGui::DragFloat3(const char *label, glm::vec3 &value, float reset_value,
   SameLine();
   { /* Drag X */
     DragScalar("##X", ImGuiDataType_Float, &value.x, 0.1f, NULL, NULL, NULL, 0,
-               ImDrawFlags_RoundCornersRight);
+               ImDrawFlags_RoundCornersNone);
   }
   PopItemWidth();
-  PopStyleVar();
   // X Component End
 
   SameLine();
 
   //* Y Component
-  PushStyleVar(ImGuiStyleVar_ItemSpacing, itemSpacing);
   { /* Reset Button Y */
     //? TODO Move hardcoded colors into general color theme
     PushStyleColor(ImGuiCol_Button, ImVec4(0.40f, 0.66f, 0.24f, 1.0f));
     PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.44f, 0.72f, 0.28f, 1.0f));
     PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.36f, 0.61f, 0.20f, 1.0f));
-    if (ButtonEx("Y", buttonSize, 0, ImDrawFlags_RoundCornersLeft))
+    if (ButtonEx("Y", buttonSize, 0, ImDrawFlags_RoundCornersNone))
       value.y = reset_value;
     PopStyleColor(3);
   }
   SameLine();
   { /* Drag Y */
     DragScalar("##Y", ImGuiDataType_Float, &value.y, 0.1f, NULL, NULL, NULL, 0,
-               ImDrawFlags_RoundCornersRight);
+               ImDrawFlags_RoundCornersNone);
   }
   PopItemWidth();
-  PopStyleVar();
   // Y Component End
 
   SameLine();
 
   //* Z Component
-  PushStyleVar(ImGuiStyleVar_ItemSpacing, itemSpacing);
   { /* Reset Button Z */
     //? TODO Move hardcoded colors into general color theme
     PushStyleColor(ImGuiCol_Button, ImVec4(0.24f, 0.52f, 0.72f, 1.0f));
     PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.28f, 0.56f, 0.82f, 1.0f));
     PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.18f, 0.46f, 0.66f, 1.0f));
-    if (ButtonEx("Z", buttonSize, 0, ImDrawFlags_RoundCornersLeft))
+    if (ButtonEx("Z", buttonSize, 0, ImDrawFlags_RoundCornersNone))
       value.z = reset_value;
     PopStyleColor(3);
   }
@@ -99,9 +94,9 @@ bool ImGui::DragFloat3(const char *label, glm::vec3 &value, float reset_value,
                ImDrawFlags_RoundCornersRight);
   }
   PopItemWidth();
-  PopStyleVar();
   // Z Component End
 
+  PopStyleVar();
   Columns(1);
   PopID();
 
