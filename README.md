@@ -1,2 +1,3 @@
-# texturia
-Procedural texture generator.
+# Frameio
+
+> A small C++ application framework.
