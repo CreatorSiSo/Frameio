@@ -6,13 +6,13 @@
 #include "Input/MouseButtonCodes.hpp"
 
 // #ifdef FR_ENABLE_ASSERTS
-#define FR_CORE_ASSERT(x, ...)                                                                 \
-    {                                                                                          \
-        if (!(x)) {                                                                            \
-            FR_CORE_ERROR("[{1}:{2}] Assertion Failed: {0}", __VA_ARGS__, __FILE__, __LINE__); \
-            debug_break();                                                                     \
-        }                                                                                      \
-    }
+#define FR_CORE_ASSERT(x, ...)                                                           \
+  {                                                                                      \
+    if (!(x)) {                                                                          \
+      FR_CORE_ERROR("[{1}:{2}] Assertion Failed: {0}", __VA_ARGS__, __FILE__, __LINE__); \
+      debug_break();                                                                     \
+    }                                                                                    \
+  }
 // #else
 // #define FR_CORE_ASSERT(x, ...)
 // #endif

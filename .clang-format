@@ -8,7 +8,7 @@ BasedOnStyle: LLVM
 ColumnLimit: 120
 
 # Whitespace
-IndentWidth: 4
+IndentWidth: 2
 UseTab: Never
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1

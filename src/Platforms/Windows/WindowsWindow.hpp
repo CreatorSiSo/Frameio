@@ -15,7 +15,7 @@ namespace Frameio {
 
 class WindowsWindow : public Window {
 public:
-  WindowsWindow(const WindowProps &props);
+  WindowsWindow(const WindowProps& props);
   virtual ~WindowsWindow();
 
   void OnUpdate() override;
@@ -24,19 +24,17 @@ public:
   inline unsigned int GetHeight() const override;
 
   // Window attributes
-  inline void SetEventCallback(const EventCallbackFunction &callback) override {
-    m_Data.EventCallback = callback;
-  }
+  inline void SetEventCallback(const EventCallbackFunction& callback) override { m_Data.EventCallback = callback; }
   void SetVSync(bool enabled) override;
   bool IsVSync() const override;
 
-  inline virtual void *GetNativeWindow() const override { return m_Window; }
+  inline virtual void* GetNativeWindow() const override { return m_Window; }
 
 private:
-  GLFWwindow *m_Window;
-  GraphicsContext *m_Context;
+  GLFWwindow* m_Window;
+  GraphicsContext* m_Context;
 
-  virtual void Init(const WindowProps &props);
+  virtual void Init(const WindowProps& props);
   virtual void Shutdown();
 
   struct WindowData {

@@ -14,38 +14,38 @@
 namespace Frameio {
 
 class MacOSWindow : public Window {
-  public:
-    MacOSWindow(const WindowProps& props);
-    virtual ~MacOSWindow();
+public:
+  MacOSWindow(const WindowProps& props);
+  virtual ~MacOSWindow();
 
-    void OnUpdate() override;
+  void OnUpdate() override;
 
-    inline unsigned int GetWidth() const override;
-    inline unsigned int GetHeight() const override;
+  inline unsigned int GetWidth() const override;
+  inline unsigned int GetHeight() const override;
 
-    // Window attributes
-    inline void SetEventCallback(const EventCallbackFunction& callback) override { m_Data.EventCallback = callback; }
-    void SetVSync(bool enabled) override;
-    bool IsVSync() const override;
+  // Window attributes
+  inline void SetEventCallback(const EventCallbackFunction& callback) override { m_Data.EventCallback = callback; }
+  void SetVSync(bool enabled) override;
+  bool IsVSync() const override;
 
-    inline virtual void* GetNativeWindow() const { return m_Window; }
+  inline virtual void* GetNativeWindow() const { return m_Window; }
 
-  private:
-    GLFWwindow* m_Window;
-    GraphicsContext* m_Context;
+private:
+  GLFWwindow* m_Window;
+  GraphicsContext* m_Context;
 
-    virtual void Init(const WindowProps& props);
-    virtual void Shutdown();
+  virtual void Init(const WindowProps& props);
+  virtual void Shutdown();
 
-    struct WindowData {
-        std::string Title;
-        unsigned int Width, Height;
-        bool VSync;
+  struct WindowData {
+    std::string Title;
+    unsigned int Width, Height;
+    bool VSync;
 
-        EventCallbackFunction EventCallback;
-    };
+    EventCallbackFunction EventCallback;
+  };
 
-    WindowData m_Data;
+  WindowData m_Data;
 };
 
 } // namespace Frameio

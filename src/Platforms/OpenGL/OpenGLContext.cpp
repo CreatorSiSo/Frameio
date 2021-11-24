@@ -3,12 +3,13 @@
 #include "OpenGLContext.hpp"
 
 namespace Frameio {
-OpenGLContext::OpenGLContext(GLFWwindow *windowHandle)
-    : m_WindowHandle(windowHandle) {
+OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
+{
   FR_CORE_ASSERT(windowHandle, "Window Handle is NULL!")
 }
 
-void OpenGLContext::Init() {
+void OpenGLContext::Init()
+{
   glfwMakeContextCurrent(m_WindowHandle);
 
   int gladInitialized = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -20,6 +21,9 @@ void OpenGLContext::Init() {
   FR_CORE_INFO("  Version:  {0}", glGetString(GL_VERSION));
 }
 
-void OpenGLContext::SwapBuffers() { glfwSwapBuffers(m_WindowHandle); }
+void OpenGLContext::SwapBuffers()
+{
+  glfwSwapBuffers(m_WindowHandle);
+}
 
 } // namespace Frameio
