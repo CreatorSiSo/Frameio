@@ -11,36 +11,36 @@
 namespace Frameio {
 
 class App {
-public:
-  App();
-  virtual ~App() = default;
+  public:
+    App();
+    virtual ~App() = default;
 
-  void Run();
+    void Run();
 
-  void OnEvent(Event &e);
+    void OnEvent(Event& e);
 
-  void PushLayer(Layer *layer);
-  void PushOverlay(Layer *overlay);
+    void PushLayer(Layer* layer);
+    void PushOverlay(Layer* overlay);
 
-  inline static App &GetApp() { return *s_Instance; }
-  inline Window &GetWindow() { return *m_Window; }
+    inline static App& GetApp() { return *s_Instance; }
+    inline Window& GetWindow() { return *m_Window; }
 
-private:
-  bool OnWindowClose(WindowCloseEvent &e);
+  private:
+    bool OnWindowClose(WindowCloseEvent& e);
 
-private:
-  bool m_Running = true;
-  float m_LastFrameTime = 0.0f;
+  private:
+    bool m_Running = true;
+    float m_LastFrameTime = 0.0f;
 
-  std::unique_ptr<Window> m_Window;
-  LayerStack m_LayerStack;
-  ImGuiLayer *m_ImGuiLayer;
+    std::unique_ptr<Window> m_Window;
+    LayerStack m_LayerStack;
+    ImGuiLayer* m_ImGuiLayer;
 
-private:
-  static App *s_Instance;
+  private:
+    static App* s_Instance;
 };
 
 // Defined by client
-App *CreateApp();
+App* CreateApp();
 
 } // namespace Frameio

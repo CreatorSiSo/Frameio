@@ -3,6 +3,6 @@
 
 namespace Frameio {
 
-RendererAPI *RenderCommand::s_RendererAPI = new OpenGLRendererAPI;
+RendererAPI* RenderCommand::s_RendererAPI = new OpenGLRendererAPI;
 
 } // namespace Frameio

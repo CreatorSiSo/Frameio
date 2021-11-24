@@ -8,20 +8,16 @@
 namespace Frameio {
 
 class Log {
-public:
-  static void Init();
+  public:
+    static void Init();
 
-  inline static std::shared_ptr<spdlog::logger> &GetCoreLogger() {
-    return s_CoreLogger;
-  }
+    inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
 
-  inline static std::shared_ptr<spdlog::logger> &GetClientLogger() {
-    return s_ClientLogger;
-  }
+    inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
 
-private:
-  static std::shared_ptr<spdlog::logger> s_CoreLogger;
-  static std::shared_ptr<spdlog::logger> s_ClientLogger;
+  private:
+    static std::shared_ptr<spdlog::logger> s_CoreLogger;
+    static std::shared_ptr<spdlog::logger> s_ClientLogger;
 };
 
 } // namespace Frameio
@@ -31,8 +27,7 @@ private:
 #define FR_CORE_INFO(...) ::Frameio::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define FR_CORE_WARN(...) ::Frameio::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define FR_CORE_ERROR(...) ::Frameio::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define FR_CORE_FATAL(...)                                                     \
-  ::Frameio::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define FR_CORE_FATAL(...) ::Frameio::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client Log macros
 #define FR_TRACE(...) ::Frameio::Log::GetClientLogger()->trace(__VA_ARGS__)

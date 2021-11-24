@@ -1,0 +1,71 @@
+# https://releases.llvm.org/7.0.0/tools/clang/docs/ClangFormatStyleOptions.html
+---
+Language: Cpp
+Standard: Latest
+BasedOnStyle: LLVM
+
+# Max Width
+ColumnLimit: 120
+
+# Whitespace
+IndentWidth: 4
+UseTab: Never
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+
+# Alignment
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Left
+AlignOperands: false
+AlignTrailingComments: true
+AlignArrayOfStructures: Right
+AllowAllParametersOfDeclarationOnNextLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+
+# Oneliners
+AllowShortIfStatementsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: true
+AllowShortBlocksOnASingleLine: Empty
+
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterNamespace: false
+  SplitEmptyNamespace: false
+  AfterExternBlock: false
+  AfterEnum: false
+  AfterStruct: false
+  SplitEmptyRecord: false
+  AfterClass: false
+  AfterUnion: false
+  AfterCaseLabel: false
+  BeforeWhile: false
+  AfterFunction: true
+  SplitEmptyFunction: false
+  BeforeLambdaBody: true
+  BeforeCatch: true
+  BeforeElse: true
+
+# Switch Statements + Enums
+IndentCaseLabels: true
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+
+# Namespaces
+FixNamespaceComments: true
+NamespaceIndentation: None
+
+# Includes
+SortIncludes: true
+
+# Spacing
+PointerAlignment: Left
+Cpp11BracedListStyle: false
+BitFieldColonSpacing: After
+SpacesInContainerLiterals: true
