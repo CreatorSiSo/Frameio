@@ -50,7 +50,7 @@ BraceWrapping:
   SplitEmptyFunction: false
   BeforeLambdaBody: true
   BeforeCatch: true
-  BeforeElse: true
+  BeforeElse: false
 
 # Switch Statements + Enums
 IndentCaseLabels: true
