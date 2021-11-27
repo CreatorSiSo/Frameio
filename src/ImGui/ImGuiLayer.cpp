@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>
+#include <imnodes.h>
 
 #include "Core/App.hpp"
 #include "ImGuiLayer.hpp"
@@ -18,6 +19,7 @@ void ImGuiLayer::OnAttach()
 {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
+  ImNodes::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -140,12 +142,40 @@ void ImGuiLayer::OnAttach()
   // https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application
   ImFont* font = io.Fonts->AddFontFromFileTTF("./assets/fonts/Comfortaa/Comfortaa-Regular.ttf", 14.0f);
   FR_CORE_ASSERT(font != NULL, "Could not load font Comfortaa-Regular!");
+
+  ImNodesStyle& imnodesStyle = ImNodes::GetStyle();
+  imnodesStyle.Colors[ImNodesCol_TitleBar] = IM_COL32(232, 27, 86, 255);
+  imnodesStyle.Colors[ImNodesCol_TitleBarHovered] = imnodesStyle.Colors[ImNodesCol_TitleBar];
+  imnodesStyle.Colors[ImNodesCol_TitleBarSelected] = imnodesStyle.Colors[ImNodesCol_TitleBar];
+
+  imnodesStyle.Colors[ImNodesCol_NodeBackground] = IM_COL32(60, 60, 60, 255);
+  imnodesStyle.Colors[ImNodesCol_NodeBackgroundHovered] = imnodesStyle.Colors[ImNodesCol_NodeBackground];
+  imnodesStyle.Colors[ImNodesCol_NodeBackgroundSelected] = imnodesStyle.Colors[ImNodesCol_NodeBackground];
+  imnodesStyle.Colors[ImNodesCol_NodeOutline] = IM_COL32(40, 40, 40, 255);
+  imnodesStyle.Colors[ImNodesCol_NodeOutlineHovered] = imnodesStyle.Colors[ImNodesCol_NodeOutline];
+  imnodesStyle.Colors[ImNodesCol_NodeOutlineSelected] = IM_COL32(229, 109, 67, 160);
+
+  imnodesStyle.Colors[ImNodesCol_Pin] = IM_COL32(150, 150, 150, 255);
+  imnodesStyle.Colors[ImNodesCol_PinHovered] = imnodesStyle.Colors[ImNodesCol_Pin];
+  imnodesStyle.Colors[ImNodesCol_Link] = imnodesStyle.Colors[ImNodesCol_Pin];
+  imnodesStyle.Colors[ImNodesCol_LinkHovered] = imnodesStyle.Colors[ImNodesCol_PinHovered];
+  imnodesStyle.Colors[ImNodesCol_LinkSelected] = IM_COL32(250, 250, 250, 255);
+
+  imnodesStyle.Colors[ImNodesCol_BoxSelector] = IM_COL32(224, 110, 61, 40);
+  imnodesStyle.Colors[ImNodesCol_BoxSelectorOutline] = IM_COL32(224, 110, 61, 180);
+  imnodesStyle.Colors[ImNodesCol_GridBackground] = IM_COL32(29, 29, 29, 255);
+
+  imnodesStyle.PinCircleRadius = 5.0f;
+  imnodesStyle.LinkThickness = 3.0f;
+  imnodesStyle.NodeCornerRounding = style.ChildRounding;
+  imnodesStyle.NodeBorderThickness = 3.0f;
 }
 
 void ImGuiLayer::OnDetach()
 {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
+  ImNodes::DestroyContext();
   ImGui::DestroyContext();
 }
 
