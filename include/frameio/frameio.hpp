@@ -5,6 +5,7 @@
 #include "Core/App.hpp"
 #include "Core/Log.hpp"
 #include "Core/Time.hpp"
+#include "Core/UUID.hpp"
 
 #include "Events/AppEvent.hpp"
 #include "Events/Event.hpp"

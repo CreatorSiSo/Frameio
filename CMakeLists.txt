@@ -14,6 +14,7 @@ set(SOURCES
     ./src/Core/Layer.cpp
     ./src/Core/LayerStack.cpp
     ./src/Core/Log.cpp
+    ./src/Core/UUID.cpp
     ./src/ImGui/ImGuiBuild.cpp
     ./src/ImGui/ImGuiLayer.cpp
     ./src/ImGui/Components/Widgets.cpp
