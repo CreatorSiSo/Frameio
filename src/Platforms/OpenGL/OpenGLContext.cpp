@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 
-#include "OpenGLContext.hpp"
+#include "Platforms/OpenGL/OpenGLContext.hpp"
 
 namespace Frameio {
 OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)

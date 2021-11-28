@@ -1,4 +1,5 @@
 #include "Renderer/Renderer.hpp"
+#include "Platforms/OpenGL/OpenGLShader.hpp"
 
 namespace Frameio {
 
@@ -14,8 +15,9 @@ void Renderer::EndScene() {}
 void Renderer::Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform)
 {
   shader->Bind();
-  shader->UploadUniformMat4("u_ViewProjectionMatrix", s_SceneData->ViewProjectionMatrix);
-  shader->UploadUniformMat4("u_TransformMatrix", transform);
+  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjectionMatrix",
+                                                                     s_SceneData->ViewProjectionMatrix);
+  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_TransformMatrix", transform);
 
   vertexArray->Bind();
 

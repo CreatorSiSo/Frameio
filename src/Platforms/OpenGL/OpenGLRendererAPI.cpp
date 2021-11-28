@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 
-#include "OpenGLRendererAPI.hpp"
+#include "Platforms/OpenGL/OpenGLRendererAPI.hpp"
 
 namespace Frameio {
 

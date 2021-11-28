@@ -1,7 +1,6 @@
 #include "Renderer/VertexArray.hpp"
 #include "Platforms/OpenGL/OpenGLVertexArray.hpp"
 #include "Renderer/Renderer.hpp"
-#include "Renderer/RendererAPI.hpp"
 
 namespace Frameio {
 

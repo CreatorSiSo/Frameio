@@ -24,6 +24,9 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/VertexArray.hpp"
 
+//! TODO Temporary
+#include "Platforms/OpenGL/OpenGLShader.hpp"
+
 #include "Core/Layer.hpp"
 #include "ImGui/ImGuiLayer.hpp"
 
