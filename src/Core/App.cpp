@@ -19,7 +19,7 @@ App::App()
   m_Window->SetEventCallback(FR_BIND_EVENT_FN(App::OnEvent));
 
   m_ImGuiLayer = new ImGuiLayer();
-  PushOverlay(m_ImGuiLayer);
+  PushLayer(m_ImGuiLayer);
 }
 
 void App::Run()

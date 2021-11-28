@@ -203,6 +203,9 @@ void ImGuiLayer::End()
   }
 }
 
-void ImGuiLayer::OnImGuiRender() {}
+void ImGuiLayer::OnImGuiRender()
+{
+  ImGui::DockSpaceOverViewport();
+}
 
 } // namespace Frameio
