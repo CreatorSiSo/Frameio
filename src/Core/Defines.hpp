@@ -6,7 +6,7 @@
 #include "Input/MouseButtonCodes.hpp"
 
 // #ifdef FR_ENABLE_ASSERTS
-#define FR_CORE_ASSERT(x, ...)                                                           \
+#define FR_ASSERT(x, ...)                                                                \
   {                                                                                      \
     if (!(x)) {                                                                          \
       FR_CORE_ERROR("[{1}:{2}] Assertion Failed: {0}", __VA_ARGS__, __FILE__, __LINE__); \
@@ -14,7 +14,7 @@
     }                                                                                    \
   }
 // #else
-// #define FR_CORE_ASSERT(x, ...)
+// #define FR_ASSERT(x, ...)
 // #endif
 
 #define FR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

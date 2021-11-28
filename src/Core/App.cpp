@@ -12,7 +12,7 @@ App* App::s_Instance = nullptr;
 
 App::App()
 {
-  FR_CORE_ASSERT(!s_Instance, "App already exists!");
+  FR_ASSERT(!s_Instance, "App already exists!");
   s_Instance = this;
 
   m_Window = std::unique_ptr<Window>(Window::Create());

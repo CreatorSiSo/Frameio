@@ -32,7 +32,7 @@ Shader::Shader(const std::string vertexSource, const std::string fragmentSource)
     glDeleteShader(vertexShader);
 
     FR_CORE_ERROR("{0}", infoLog.data());
-    FR_CORE_ASSERT(false, "Failed to compile vertex shader!");
+    FR_ASSERT(false, "Failed to compile vertex shader!");
 
     return;
   }
@@ -62,7 +62,7 @@ Shader::Shader(const std::string vertexSource, const std::string fragmentSource)
     glDeleteShader(vertexShader);
 
     FR_CORE_ERROR("{0}", infoLog.data());
-    FR_CORE_ASSERT(false, "Failed to compile fragment shader!");
+    FR_ASSERT(false, "Failed to compile fragment shader!");
 
     return;
   }
@@ -98,7 +98,7 @@ Shader::Shader(const std::string vertexSource, const std::string fragmentSource)
     glDeleteShader(fragmentShader);
 
     FR_CORE_ERROR("{0}", infoLog.data());
-    FR_CORE_ASSERT(false, "Failed to link the shaders!");
+    FR_ASSERT(false, "Failed to link the shaders!");
 
     return;
   }

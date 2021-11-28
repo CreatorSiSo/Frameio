@@ -141,7 +141,7 @@ void ImGuiLayer::OnAttach()
   // TODO Use dpi for font size and dont hardcode it!!
   // https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application
   ImFont* font = io.Fonts->AddFontFromFileTTF("./assets/fonts/Comfortaa/Comfortaa-Regular.ttf", 14.0f);
-  FR_CORE_ASSERT(font != NULL, "Could not load font Comfortaa-Regular!");
+  FR_ASSERT(font != NULL, "Could not load font Comfortaa-Regular!");
 
   ImNodesStyle& imnodesStyle = ImNodes::GetStyle();
   imnodesStyle.Colors[ImNodesCol_TitleBar] = IM_COL32(232, 27, 86, 255);

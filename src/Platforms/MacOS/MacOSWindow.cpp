@@ -36,7 +36,7 @@ void MacOSWindow::Init(const WindowProps& props)
   if (!s_GLFWInitialized) {
     // TODO: glfwTerminate on system shutdown
     int glfwInitialized = glfwInit();
-    FR_CORE_ASSERT(glfwInitialized, "Failed to intialize GLFW!");
+    FR_ASSERT(glfwInitialized, "Failed to intialize GLFW!");
     glfwSetErrorCallback(GLFWErrorCallbackFunction);
     s_GLFWInitialized = true;
   }

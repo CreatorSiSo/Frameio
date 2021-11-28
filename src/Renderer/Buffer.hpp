@@ -23,7 +23,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
 {
   switch (type) {
     case ShaderDataType::None:
-      FR_CORE_ASSERT(false, "Your ShaderDataType is None which has no size!")
+      FR_ASSERT(false, "Your ShaderDataType is None which has no size!")
       return 0;
     case ShaderDataType::Float:
       return 4;
@@ -49,7 +49,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
       return 1;
   }
 
-  FR_CORE_ASSERT(false, "Unknow ShaderDataType!")
+  FR_ASSERT(false, "Unknow ShaderDataType!")
   return 0;
 }
 
@@ -70,7 +70,7 @@ struct BufferElement {
   {
     switch (Type) {
       case ShaderDataType::None:
-        FR_CORE_ASSERT(false, "Your ShaderDataType is None which has no components!")
+        FR_ASSERT(false, "Your ShaderDataType is None which has no components!")
         return 0;
       case ShaderDataType::Float:
         return 1;
@@ -96,7 +96,7 @@ struct BufferElement {
         return 1;
     }
 
-    FR_CORE_ASSERT(false, "Unknow ShaderDataType!")
+    FR_ASSERT(false, "Unknow ShaderDataType!")
     return 0;
   }
 };
