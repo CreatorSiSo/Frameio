@@ -9,36 +9,18 @@ project(
 set(CMAKE_CXX_STANDARD 20)
 
 # Source Files
-set(SOURCES
-    ./src/Core/App.cpp
-    ./src/Core/Layer.cpp
-    ./src/Core/LayerStack.cpp
-    ./src/Core/Log.cpp
-    ./src/Core/UUID.cpp
-    ./src/ImGui/ImGuiBuild.cpp
-    ./src/ImGui/ImGuiLayer.cpp
-    ./src/ImGui/Components/Widgets.cpp
-    ./src/Renderer/Buffer.cpp
-    ./src/Renderer/Camera.cpp
-    ./src/Renderer/Renderer.cpp
-    ./src/Renderer/RendererAPI.cpp
-    ./src/Renderer/RenderCommand.cpp
-    ./src/Renderer/Shader.cpp
-    ./src/Renderer/VertexArray.cpp
-    ./src/Platforms/OpenGL/OpenGLBuffer.cpp
-    ./src/Platforms/OpenGL/OpenGLContext.cpp
-    ./src/Platforms/OpenGL/OpenGLVertexArray.cpp
-    ./src/Platforms/OpenGL/OpenGLRendererAPI.cpp)
+file(GLOB_RECURSE SOURCES
+    ./src/Core/*.cpp
+    ./src/ImGui/*.cpp
+    ./src/Renderer/*.cpp
+    ./src/Platforms/OpenGL/*.cpp)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  set(PLATFORM_SOURCES ./src/Platforms/Windows/WindowsInput.cpp
-                       ./src/Platforms/Windows/WindowsWindow.cpp)
+  file(GLOB_RECURSE PLATFORM_SOURCES ./src/Platforms/Windows/*.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set(PLATFORM_SOURCES ./src/Platforms/Linux/LinuxInput.cpp
-                       ./src/Platforms/Linux/LinuxWindow.cpp)
+  file(GLOB_RECURSE PLATFORM_SOURCES ./src/Platforms/Linux/*.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set(PLATFORM_SOURCES ./src/Platforms/MacOS/MacOSInput.cpp
-                       ./src/Platforms/MacOS/MacOSWindow.cpp)
+  file(GLOB_RECURSE PLATFORM_SOURCES ./src/Platforms/MacOS/*.cpp)
 endif()
 
 # Targets
@@ -47,13 +29,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
 
 # Crossplatform Compiler Defines/Options
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  add_compile_definitions(TX_PLATFORM_WINDOWS)
+  add_compile_definitions(FR_PLATFORM_WINDOWS)
   # target_compile_options(${PROJECT_NAME} PRIVATE /W4)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  add_compile_definitions(TX_PLATFORM_LINUX)
+  add_compile_definitions(FR_PLATFORM_LINUX)
   # target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  add_compile_definitions(TX_PLATFORM_MACOS)
+  add_compile_definitions(FR_PLATFORM_MACOS)
 endif()
 
 # Includes
