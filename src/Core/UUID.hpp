@@ -2,9 +2,12 @@
 
 namespace Frameio {
 
+constexpr bool Int32Range = true;
+
 class UUID {
 public:
   UUID();
+  explicit UUID(bool useInt32Range);
   UUID(uint64_t uuid);
   UUID(const UUID&) = default;
 
