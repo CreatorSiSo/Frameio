@@ -17,3 +17,6 @@
 [submodule "imnodes"]
 	path = libs/imnodes
 	url = https://github.com/CreatorSiSo/imnodes.git
+[submodule "stb"]
+	path = libs/stb
+	url = https://github.com/CreatorSiSo/stb.git

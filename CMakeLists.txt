@@ -43,11 +43,8 @@ target_include_directories(
   ${PROJECT_NAME}
   PUBLIC ./src
   PUBLIC ./libs/debugbreak
-  PUBLIC ./libs/glfw/include
-  PUBLIC ./libs/glm
-  PUBLIC ./libs/imgui
-  PUBLIC ./libs/imnodes
-  PUBLIC ./libs/spdlog/include
+  PRIVATE ./libs/glfw/include
+  PRIVATE ./libs/spdlog/include
   PRIVATE ./libs/glad/include)
 
 # External Libraries
@@ -57,9 +54,10 @@ add_subdirectory(./libs/glm)
 add_subdirectory(./libs/imgui)
 add_subdirectory(./libs/imnodes)
 add_subdirectory(./libs/spdlog)
+add_subdirectory(./libs/stb)
 
 # Linking
-target_link_libraries(${PROJECT_NAME} glad glfw glm imgui imnodes spdlog)
+target_link_libraries(${PROJECT_NAME} glad glfw glm imgui imnodes spdlog stb_image)
 
 # Precompiled Headers
 target_precompile_headers(${PROJECT_NAME} PRIVATE ./src/frpch.hpp)
