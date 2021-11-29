@@ -22,6 +22,7 @@
 #include "Renderer/Buffer.hpp"
 #include "Renderer/Camera.hpp"
 #include "Renderer/Shader.hpp"
+#include "Renderer/Texture.hpp"
 #include "Renderer/VertexArray.hpp"
 
 //! TODO Temporary
