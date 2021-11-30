@@ -5,6 +5,7 @@
 
 #include "Core/App.hpp"
 #include "Input/Input.hpp"
+#include "Renderer/Renderer.hpp"
 
 namespace Frameio {
 
@@ -17,6 +18,8 @@ App::App()
 
   m_Window = std::unique_ptr<Window>(Window::Create());
   m_Window->SetEventCallback(FR_BIND_EVENT_FN(App::OnEvent));
+
+  Renderer::Init();
 
   m_ImGuiLayer = new ImGuiLayer();
   PushLayer(m_ImGuiLayer);
