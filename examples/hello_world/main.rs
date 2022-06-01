@@ -1,5 +1,6 @@
-use appio::print_hello_world;
+use appio::App;
 
 fn main() {
-	print_hello_world();
+	let app = App::default();
+	app.run(&[1, 2, 3]);
 }
