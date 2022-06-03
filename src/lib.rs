@@ -1,208 +1,150 @@
-use std::collections::HashMap;
-use winit::{
-	event::{Event, WindowEvent},
-	event_loop::{ControlFlow, EventLoop},
-	window::{Window, WindowBuilder, WindowId},
-};
+// use std::collections::HashMap;
 
-#[derive(Debug)]
-pub struct App {
-	event_loop: EventLoop<()>,
-	windows: HashMap<WindowId, Window>,
-	viewports: HashMap<WindowId, Viewport>,
+// pub struct Tree<NodeId, Node = (), Link = ()> {
+// 	nodes: HashMap<NodeId, Node, Link>,
+// }
+
+// #[derive(Debug, Default)]
+// pub struct Node<T = ()> {
+// 	pub data: T,
+// 	pub children: Vec<Node<T>>,
+// }
+
+// impl<T> Node<T> {
+// 	pub fn new(data: T) -> Self {
+// 		Self {
+// 			data,
+// 			children: Vec::default(),
+// 		}
+// 	}
+// }
+
+#[derive(Debug, Default, PartialEq)]
+pub struct Element {
+	pub name: String,
+	pub children: Vec<Element>,
 }
 
-impl App {
-	pub fn new() -> Self {
+impl Element {
+	pub fn new(name: &str) -> Self {
 		Self {
-			event_loop: EventLoop::new(),
-			windows: HashMap::new(),
-			viewports: HashMap::new(),
+			name: name.into(),
+			children: Vec::default(),
 		}
 	}
 
-	pub fn run(mut self, window_configs: &[u32]) {
-		pollster::block_on(async {
-			env_logger::init();
+	pub fn insert_child(&mut self, child: Element) -> &mut Element {
+		self.children.push(child);
+		self
+			.children
+			.last_mut()
+			.expect("Just inserted child Element does not exist!")
+	}
 
-			// TODO: Add WindowConfig struct
-			for _window_config in window_configs {
-				if let Ok(window) = WindowBuilder::new().build(&self.event_loop) {
-					window.set_title(format!("{:?}", window.id()).as_str());
-					self
-						.viewports
-						.insert(window.id(), Viewport::new(&window).await);
-					self.windows.insert(window.id(), window);
-				}
+	pub fn insert_children(&mut self, mut children: Vec<Element>) -> &mut Self {
+		self.children.append(&mut children);
+		self
+	}
+
+	pub fn iter(&self) -> ElementIter<'_> {
+		ElementIter(self.children.as_slice())
+	}
+
+	pub fn iter_mut(&mut self) -> ElementIterMut<'_> {
+		ElementIterMut(self.children.as_mut_slice())
+	}
+
+	pub fn _build() {
+		todo!()
+	}
+}
+
+pub struct ElementIter<'a>(&'a [Element]);
+
+impl<'a> Iterator for ElementIter<'a> {
+	type Item = &'a Element;
+
+	fn next(&mut self) -> Option<Self::Item> {
+		match self.0.split_first() {
+			Some((first, rest)) => {
+				self.0 = rest;
+				Some(first)
 			}
-
-			self.event_loop.run(move |event, _, control_flow| {
-				*control_flow = ControlFlow::Wait;
-				match event {
-					Event::WindowEvent {
-						ref event,
-						ref window_id,
-					} => {
-						match event {
-							WindowEvent::CloseRequested
-							| WindowEvent::KeyboardInput {
-								input:
-									winit::event::KeyboardInput {
-										state: winit::event::ElementState::Pressed,
-										virtual_keycode: Some(winit::event::VirtualKeyCode::Escape),
-										..
-									},
-								..
-							} => {
-								self.windows.remove(window_id);
-								self.viewports.remove(window_id);
-
-								if self.windows.is_empty() {
-									*control_flow = ControlFlow::Exit
-								};
-							}
-							WindowEvent::Resized(physical_size) => {
-								if let Some(viewport) = self.viewports.get_mut(window_id) {
-									viewport.resize(*physical_size);
-								}
-							}
-							WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-								if let Some(viewport) = self.viewports.get_mut(window_id) {
-									viewport.resize(**new_inner_size);
-								}
-							}
-							_ => (),
-						};
-					}
-					Event::RedrawRequested(window_id) => {
-						if let Some(viewport) = self.viewports.get_mut(&window_id) {
-							match viewport.render() {
-								Ok(_) => (),
-								Err(wgpu::SurfaceError::Lost) => viewport.resize(viewport.size),
-								Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
-								Err(e) => eprintln!("{:?}", e),
-							};
-						}
-					}
-					Event::MainEventsCleared => {
-						for (_, window) in &self.windows {
-							window.request_redraw();
-						}
-					}
-					_ => (),
-				}
-			});
-		});
+			None => None,
+		}
 	}
 }
 
-impl Default for App {
-	fn default() -> Self {
-		Self::new()
+impl<'a> IntoIterator for &'a Element {
+	type Item = &'a Element;
+
+	type IntoIter = ElementIter<'a>;
+
+	fn into_iter(self) -> Self::IntoIter {
+		self.iter()
 	}
 }
 
-#[derive(Debug)]
-struct Viewport {
-	surface: wgpu::Surface,
-	device: wgpu::Device,
-	queue: wgpu::Queue,
-	config: wgpu::SurfaceConfiguration,
-	size: winit::dpi::PhysicalSize<u32>,
+pub struct ElementIterMut<'a>(&'a mut [Element]);
+
+impl<'a> Iterator for ElementIterMut<'a> {
+	type Item = &'a mut Element;
+
+	fn next(&mut self) -> Option<Self::Item> {
+		// Does not work without swap
+		// https://stackoverflow.com/questions/61847200/cannot-infer-an-appropriate-lifetime-for-autoref-due-to-conflicting-requirement
+		let mut temp: ElementIterMut<'a> = ElementIterMut(&mut []);
+		std::mem::swap(&mut self.0, &mut temp.0);
+
+		match temp.0.split_first_mut() {
+			Some((first, rest)) => {
+				self.0 = rest;
+				Some(first)
+			}
+			None => None,
+		}
+	}
 }
 
-impl Viewport {
-	async fn new(window: &Window) -> Self {
-		// The instance is a handle to the GPU
-		// Backends::all ==> Vulkan | Metal | DX12 | Browser WebGPU
-		let instance = wgpu::Instance::new(wgpu::Backends::all());
-		let surface = unsafe { instance.create_surface(window) };
+impl<'a> IntoIterator for &'a mut Element {
+	type Item = &'a mut Element;
 
-		let adapter = instance
-			// TODO: Check all available adapters and pick the best / one that works
-			// https://docs.rs/wgpu/latest/wgpu/struct.Adapter.html
-			// https://sotrh.github.io/learn-wgpu/beginner/tutorial2-surface/#state-new
-			.request_adapter(&wgpu::RequestAdapterOptionsBase {
-				power_preference: wgpu::PowerPreference::default(),
-				force_fallback_adapter: false,
-				compatible_surface: Some(&surface),
-			})
-			.await
-			.unwrap();
+	type IntoIter = ElementIterMut<'a>;
 
-		let (device, queue) = adapter
-			.request_device(
-				&wgpu::DeviceDescriptor {
-					features: wgpu::Features::empty(),
-					limits: wgpu::Limits::default(),
-					label: None,
-				},
-				None,
-			)
-			.await
-			.unwrap();
+	fn into_iter(self) -> Self::IntoIter {
+		self.iter_mut()
+	}
+}
 
-		let size = window.inner_size();
-		let config = wgpu::SurfaceConfiguration {
-			usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-			format: surface.get_preferred_format(&adapter).unwrap(),
-			width: size.width,
-			height: size.height,
-			present_mode: wgpu::PresentMode::Fifo,
-		};
+#[test]
+fn test_borrowing_for_loop() {
+	let mut root = Element::new("Root");
+	root.insert_children(vec![
+		Element::new("GlobalMenu"),
+		Element::new("Editor"),
+		Element::new("Editor"),
+		Element::new("Editor"),
+	]);
 
-		Self {
-			surface,
-			device,
-			queue,
-			config,
-			size,
-		}
+	for child in &root {
+		let temp = child;
+		println!("{:#?}", temp);
+	}
+}
+
+#[test]
+fn test_mutable_for_loop() {
+	let mut root = Element::new("Root");
+	root.insert_children(vec![
+		Element::new("GlobalMenu"),
+		Element::new("Editor"),
+		Element::new("Editor"),
+		Element::new("Editor"),
+	]);
+
+	for child in &mut root {
+		child.name = "new_name".into()
 	}
 
-	fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {
-		if new_size.width > 0 && new_size.height > 0 {
-			self.size = new_size;
-			self.config.width = new_size.width;
-			self.config.height = new_size.height;
-			self.surface.configure(&self.device, &self.config);
-		}
-	}
-
-	fn render(&self) -> Result<(), wgpu::SurfaceError> {
-		let output = self.surface.get_current_texture()?;
-		let view = output
-			.texture
-			.create_view(&wgpu::TextureViewDescriptor::default());
-		let mut encoder = self
-			.device
-			.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-				label: Some("Render Encoder"),
-			});
-
-		{
-			let _render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-				label: Some("Render Pass"),
-				color_attachments: &[wgpu::RenderPassColorAttachment {
-					view: &view,
-					resolve_target: None,
-					ops: wgpu::Operations {
-						load: wgpu::LoadOp::Clear(wgpu::Color {
-							r: 0.1,
-							g: 0.1,
-							b: 0.1,
-							a: 1.0,
-						}),
-						store: true,
-					},
-				}],
-				depth_stencil_attachment: None,
-			});
-		}
-
-		self.queue.submit(std::iter::once(encoder.finish()));
-		output.present();
-
-		Ok(())
-	}
+	println!("{:#?}", root);
 }
