@@ -1,4 +1,4 @@
-use appio::Element;
+use appio::prelude::*;
 
 fn main() {
 	let mut root = Element::new("Root");
