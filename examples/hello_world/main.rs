@@ -1,11 +1,9 @@
-use appio::App;
+use appio::prelude::*;
 
 fn main() {
 	pollster::block_on(async {
 		env_logger::init();
 
-		let mut app = App::new("Hello World").await;
-
-		app.run();
+		App::new("Hello World").await.run();
 	})
 }
