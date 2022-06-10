@@ -1,38 +1,32 @@
-use std::collections::HashMap;
 use winit::{
 	event::{Event, WindowEvent},
 	event_loop::{ControlFlow, EventLoop},
-	window::{Window, WindowBuilder, WindowId},
+	window::{Window, WindowBuilder},
 };
 
 #[derive(Debug)]
 pub struct App {
 	event_loop: EventLoop<()>,
-	windows: HashMap<WindowId, Window>,
-	viewports: HashMap<WindowId, Viewport>,
+	window: Window,
+	viewport: Viewport,
 }
 
 impl App {
-	pub fn new() -> Self {
+	// TODO: Add WindowConfig struct
+	pub async fn new(window_name: &str) -> Self {
+		let event_loop = EventLoop::new();
+
+		let window = WindowBuilder::new().build(&event_loop).unwrap();
+		window.set_title(format!("{}: {:?}", window_name, window.id()).as_str());
+
+		let viewport = Viewport::new(&window).await;
+
 		Self {
-			event_loop: EventLoop::new(),
-			windows: HashMap::new(),
-			viewports: HashMap::new(),
+			event_loop,
+			window,
+			viewport,
 		}
 	}
-
-	pub async fn spawn_window(&mut self, window_name: &str) {
-		// TODO: Add WindowConfig struct
-		if let Ok(window) = WindowBuilder::new().build(&self.event_loop) {
-			window.set_title(format!("{}: {:?}", window_name, window.id()).as_str());
-			self
-				.viewports
-				.insert(window.id(), Viewport::new(&window).await);
-			self.windows.insert(window.id(), window);
-		}
-	}
-
-	pub fn set_render_fn(f: impl Fn() -> Result<(), wgpu::SurfaceError>) {}
 
 	pub fn run(mut self) {
 		self.event_loop.run(move |event, _, control_flow| {
@@ -53,41 +47,26 @@ impl App {
 									..
 								},
 							..
-						} => {
-							self.windows.remove(window_id);
-							self.viewports.remove(window_id);
-
-							if self.windows.is_empty() {
-								*control_flow = ControlFlow::Exit
-							};
-						}
+						} => *control_flow = ControlFlow::Exit,
 						WindowEvent::Resized(physical_size) => {
-							if let Some(viewport) = self.viewports.get_mut(window_id) {
-								viewport.resize(*physical_size);
-							}
+							self.viewport.resize(*physical_size);
 						}
 						WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-							if let Some(viewport) = self.viewports.get_mut(window_id) {
-								viewport.resize(**new_inner_size);
-							}
+							self.viewport.resize(**new_inner_size)
 						}
 						_ => (),
 					};
 				}
 				Event::RedrawRequested(window_id) => {
-					if let Some(viewport) = self.viewports.get_mut(&window_id) {
-						match viewport.render() {
-							Ok(_) => (),
-							Err(wgpu::SurfaceError::Lost) => viewport.resize(viewport.size),
-							Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
-							Err(e) => eprintln!("{:?}", e),
-						};
-					}
+					match self.viewport.render() {
+						Ok(_) => (),
+						Err(wgpu::SurfaceError::Lost) => self.viewport.resize(self.viewport.size),
+						Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
+						Err(e) => eprintln!("{:?}", e),
+					};
 				}
 				Event::MainEventsCleared => {
-					for (_, window) in &self.windows {
-						window.request_redraw();
-					}
+					self.window.request_redraw();
 				}
 				_ => (),
 			}
@@ -95,19 +74,13 @@ impl App {
 	}
 }
 
-impl Default for App {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
+#[derive(Debug)]
 struct Viewport {
 	surface: wgpu::Surface,
 	device: wgpu::Device,
 	queue: wgpu::Queue,
 	config: wgpu::SurfaceConfiguration,
 	size: winit::dpi::PhysicalSize<u32>,
-	render: Box<dyn Fn() -> Result<(), wgpu::SurfaceError>>,
 }
 
 impl Viewport {
@@ -167,8 +140,6 @@ impl Viewport {
 			self.surface.configure(&self.device, &self.config);
 		}
 	}
-
-	pub fn set_render_fn(f: impl Fn() -> Result<(), wgpu::SurfaceError>) {}
 
 	fn render(&self) -> Result<(), wgpu::SurfaceError> {
 		let output = self.surface.get_current_texture()?;
