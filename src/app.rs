@@ -37,6 +37,9 @@ impl App {
 			match event {
 				Event::WindowEvent { ref event, .. } => {
 					match event {
+						WindowEvent::CursorMoved { position, .. } => {
+							self.viewport.cursor_pos = *position;
+						}
 						WindowEvent::CloseRequested
 						| WindowEvent::KeyboardInput {
 							input:

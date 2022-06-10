@@ -1,12 +1,14 @@
-use winit::window::Window;
+use winit::{dpi::PhysicalPosition, window::Window};
 
 #[derive(Debug)]
-pub(crate) struct Viewport {
-	pub(crate) surface: wgpu::Surface,
-	pub(crate) device: wgpu::Device,
-	pub(crate) queue: wgpu::Queue,
-	pub(crate) config: wgpu::SurfaceConfiguration,
+pub struct Viewport {
+	surface: wgpu::Surface,
+	device: wgpu::Device,
+	queue: wgpu::Queue,
+	config: wgpu::SurfaceConfiguration,
 	pub(crate) size: winit::dpi::PhysicalSize<u32>,
+	pub(crate) cursor_pos: PhysicalPosition<f64>,
+	render_pipelines: (wgpu::RenderPipeline, wgpu::RenderPipeline),
 }
 
 impl Viewport {
@@ -49,12 +51,78 @@ impl Viewport {
 			present_mode: wgpu::PresentMode::Fifo,
 		};
 
+		let shader = device.create_shader_module(&wgpu::ShaderModuleDescriptor {
+			label: Some("Solid Color"),
+			source: wgpu::ShaderSource::Wgsl(include_str!("test.wgsl").into()),
+		});
+
+		let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+			label: Some("Render Pipeline Layout"),
+			bind_group_layouts: &[],
+			push_constant_ranges: &[],
+		});
+
+		let render_pipeline_desc = wgpu::RenderPipelineDescriptor {
+			label: Some("Render Pipeline"),
+			layout: Some(&render_pipeline_layout),
+			vertex: wgpu::VertexState {
+				module: &shader,
+				entry_point: "vs_main",
+				buffers: &[],
+			},
+			fragment: None,
+			primitive: wgpu::PrimitiveState {
+				topology: wgpu::PrimitiveTopology::TriangleList,
+				strip_index_format: None,
+				front_face: wgpu::FrontFace::Ccw,
+				cull_mode: Some(wgpu::Face::Back),
+				polygon_mode: wgpu::PolygonMode::Fill,
+				unclipped_depth: false,
+				conservative: false,
+			},
+			depth_stencil: None,
+			multisample: wgpu::MultisampleState {
+				count: 1,
+				mask: !0,
+				alpha_to_coverage_enabled: false,
+			},
+			multiview: None,
+		};
+
+		let render_pipeline_col = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+			fragment: Some(wgpu::FragmentState {
+				module: &shader,
+				entry_point: "fs_main_col",
+				targets: &[wgpu::ColorTargetState {
+					format: config.format,
+					blend: Some(wgpu::BlendState::REPLACE),
+					write_mask: wgpu::ColorWrites::ALL,
+				}],
+			}),
+			..render_pipeline_desc.clone()
+		});
+
+		let render_pipeline_pos = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+			fragment: Some(wgpu::FragmentState {
+				module: &shader,
+				entry_point: "fs_main_pos",
+				targets: &[wgpu::ColorTargetState {
+					format: config.format,
+					blend: Some(wgpu::BlendState::REPLACE),
+					write_mask: wgpu::ColorWrites::ALL,
+				}],
+			}),
+			..render_pipeline_desc
+		});
+
 		Self {
 			surface,
 			device,
 			queue,
 			config,
 			size,
+			cursor_pos: PhysicalPosition::default(),
+			render_pipelines: (render_pipeline_col, render_pipeline_pos),
 		}
 	}
 
@@ -79,16 +147,16 @@ impl Viewport {
 			});
 
 		{
-			let _render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+			let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
 				label: Some("Render Pass"),
 				color_attachments: &[wgpu::RenderPassColorAttachment {
 					view: &view,
 					resolve_target: None,
 					ops: wgpu::Operations {
 						load: wgpu::LoadOp::Clear(wgpu::Color {
-							r: 0.1,
-							g: 0.1,
-							b: 0.1,
+							r: self.cursor_pos.x / self.size.width as f64,
+							g: self.cursor_pos.y / self.size.height as f64,
+							b: 1.0,
 							a: 1.0,
 						}),
 						store: true,
@@ -96,6 +164,9 @@ impl Viewport {
 				}],
 				depth_stencil_attachment: None,
 			});
+
+			render_pass.set_pipeline(&self.render_pipelines.1);
+			render_pass.draw(0..3, 0..1);
 		}
 
 		self.queue.submit(std::iter::once(encoder.finish()));
