@@ -1,4 +1,5 @@
 mod app;
+mod buffers;
 mod viewport;
 
 pub mod prelude {

@@ -1,4 +1,58 @@
+use wgpu::{util::DeviceExt, BufferUsages};
 use winit::{dpi::PhysicalPosition, window::Window};
+
+use crate::buffers::Vertex;
+
+const _TRI: &[Vertex] = &[
+	Vertex {
+		// center top
+		position: [0.0, 1.0, 0.0],
+		color: [1.0, 0.0, 0.0],
+	},
+	Vertex {
+		// left bottom
+		position: [-1.0, -1.0, 0.0],
+		color: [0.0, 1.0, 0.0],
+	},
+	Vertex {
+		// right bottom
+		position: [1.0, -1.0, 0.0],
+		color: [0.0, 0.0, 1.0],
+	},
+];
+
+const QUAD: &[Vertex] = &[
+	Vertex {
+		// left top
+		position: [-1.0, 1.0, 0.0],
+		color: [0.5, 0.5, 0.0],
+	},
+	Vertex {
+		// right bottom
+		position: [1.0, -1.0, 0.0],
+		color: [0.0, 0.0, 1.0],
+	},
+	Vertex {
+		// right top
+		position: [1.0, 1.0, 0.0],
+		color: [0.5, 0.0, 0.5],
+	},
+	Vertex {
+		// left top
+		position: [-1.0, 1.0, 0.0],
+		color: [0.5, 0.5, 0.0],
+	},
+	Vertex {
+		// left bottom
+		position: [-1.0, -1.0, 0.0],
+		color: [0.0, 1.0, 0.0],
+	},
+	Vertex {
+		// right bottom
+		position: [1.0, -1.0, 0.0],
+		color: [0.0, 0.0, 1.0],
+	},
+];
 
 #[derive(Debug)]
 pub struct Viewport {
@@ -8,7 +62,8 @@ pub struct Viewport {
 	config: wgpu::SurfaceConfiguration,
 	pub(crate) size: winit::dpi::PhysicalSize<u32>,
 	pub(crate) cursor_pos: PhysicalPosition<f64>,
-	render_pipelines: (wgpu::RenderPipeline, wgpu::RenderPipeline),
+	render_pipeline: wgpu::RenderPipeline,
+	vertex_buffer: wgpu::Buffer,
 }
 
 impl Viewport {
@@ -68,7 +123,7 @@ impl Viewport {
 			vertex: wgpu::VertexState {
 				module: &shader,
 				entry_point: "vs_main",
-				buffers: &[],
+				buffers: &[Vertex::layout()],
 			},
 			fragment: None,
 			primitive: wgpu::PrimitiveState {
@@ -81,31 +136,14 @@ impl Viewport {
 				conservative: false,
 			},
 			depth_stencil: None,
-			multisample: wgpu::MultisampleState {
-				count: 1,
-				mask: !0,
-				alpha_to_coverage_enabled: false,
-			},
+			multisample: wgpu::MultisampleState::default(),
 			multiview: None,
 		};
 
-		let render_pipeline_col = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+		let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
 			fragment: Some(wgpu::FragmentState {
 				module: &shader,
-				entry_point: "fs_main_col",
-				targets: &[wgpu::ColorTargetState {
-					format: config.format,
-					blend: Some(wgpu::BlendState::REPLACE),
-					write_mask: wgpu::ColorWrites::ALL,
-				}],
-			}),
-			..render_pipeline_desc.clone()
-		});
-
-		let render_pipeline_pos = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-			fragment: Some(wgpu::FragmentState {
-				module: &shader,
-				entry_point: "fs_main_pos",
+				entry_point: "fs_main",
 				targets: &[wgpu::ColorTargetState {
 					format: config.format,
 					blend: Some(wgpu::BlendState::REPLACE),
@@ -115,6 +153,12 @@ impl Viewport {
 			..render_pipeline_desc
 		});
 
+		let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+			label: Some("Triangle Vertex Buffer"),
+			usage: BufferUsages::VERTEX,
+			contents: bytemuck::cast_slice(QUAD),
+		});
+
 		Self {
 			surface,
 			device,
@@ -122,7 +166,8 @@ impl Viewport {
 			config,
 			size,
 			cursor_pos: PhysicalPosition::default(),
-			render_pipelines: (render_pipeline_col, render_pipeline_pos),
+			render_pipeline,
+			vertex_buffer,
 		}
 	}
 
@@ -165,8 +210,9 @@ impl Viewport {
 				depth_stencil_attachment: None,
 			});
 
-			render_pass.set_pipeline(&self.render_pipelines.1);
-			render_pass.draw(0..3, 0..1);
+			render_pass.set_pipeline(&self.render_pipeline);
+			render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+			render_pass.draw(0..QUAD.len() as u32, 0..1);
 		}
 
 		self.queue.submit(std::iter::once(encoder.finish()));
