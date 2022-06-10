@@ -21,77 +21,76 @@ impl App {
 		}
 	}
 
-	pub fn run(mut self, window_configs: &[u32]) {
-		pollster::block_on(async {
-			env_logger::init();
+	pub async fn spawn_window(&mut self, window_name: &str) {
+		// TODO: Add WindowConfig struct
+		if let Ok(window) = WindowBuilder::new().build(&self.event_loop) {
+			window.set_title(format!("{}: {:?}", window_name, window.id()).as_str());
+			self
+				.viewports
+				.insert(window.id(), Viewport::new(&window).await);
+			self.windows.insert(window.id(), window);
+		}
+	}
 
-			// TODO: Add WindowConfig struct
-			for _window_config in window_configs {
-				if let Ok(window) = WindowBuilder::new().build(&self.event_loop) {
-					window.set_title(format!("{:?}", window.id()).as_str());
-					self
-						.viewports
-						.insert(window.id(), Viewport::new(&window).await);
-					self.windows.insert(window.id(), window);
-				}
-			}
+	pub fn set_render_fn(f: impl Fn() -> Result<(), wgpu::SurfaceError>) {}
 
-			self.event_loop.run(move |event, _, control_flow| {
-				*control_flow = ControlFlow::Wait;
-				match event {
-					Event::WindowEvent {
-						ref event,
-						ref window_id,
-					} => {
-						match event {
-							WindowEvent::CloseRequested
-							| WindowEvent::KeyboardInput {
-								input:
-									winit::event::KeyboardInput {
-										state: winit::event::ElementState::Pressed,
-										virtual_keycode: Some(winit::event::VirtualKeyCode::Escape),
-										..
-									},
-								..
-							} => {
-								self.windows.remove(window_id);
-								self.viewports.remove(window_id);
+	pub fn run(mut self) {
+		self.event_loop.run(move |event, _, control_flow| {
+			*control_flow = ControlFlow::Wait;
 
-								if self.windows.is_empty() {
-									*control_flow = ControlFlow::Exit
-								};
-							}
-							WindowEvent::Resized(physical_size) => {
-								if let Some(viewport) = self.viewports.get_mut(window_id) {
-									viewport.resize(*physical_size);
-								}
-							}
-							WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-								if let Some(viewport) = self.viewports.get_mut(window_id) {
-									viewport.resize(**new_inner_size);
-								}
-							}
-							_ => (),
-						};
-					}
-					Event::RedrawRequested(window_id) => {
-						if let Some(viewport) = self.viewports.get_mut(&window_id) {
-							match viewport.render() {
-								Ok(_) => (),
-								Err(wgpu::SurfaceError::Lost) => viewport.resize(viewport.size),
-								Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
-								Err(e) => eprintln!("{:?}", e),
+			match event {
+				Event::WindowEvent {
+					ref event,
+					ref window_id,
+				} => {
+					match event {
+						WindowEvent::CloseRequested
+						| WindowEvent::KeyboardInput {
+							input:
+								winit::event::KeyboardInput {
+									state: winit::event::ElementState::Pressed,
+									virtual_keycode: Some(winit::event::VirtualKeyCode::Escape),
+									..
+								},
+							..
+						} => {
+							self.windows.remove(window_id);
+							self.viewports.remove(window_id);
+
+							if self.windows.is_empty() {
+								*control_flow = ControlFlow::Exit
 							};
 						}
-					}
-					Event::MainEventsCleared => {
-						for (_, window) in &self.windows {
-							window.request_redraw();
+						WindowEvent::Resized(physical_size) => {
+							if let Some(viewport) = self.viewports.get_mut(window_id) {
+								viewport.resize(*physical_size);
+							}
 						}
-					}
-					_ => (),
+						WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+							if let Some(viewport) = self.viewports.get_mut(window_id) {
+								viewport.resize(**new_inner_size);
+							}
+						}
+						_ => (),
+					};
 				}
-			});
+				Event::RedrawRequested(window_id) => {
+					if let Some(viewport) = self.viewports.get_mut(&window_id) {
+						match viewport.render() {
+							Ok(_) => (),
+							Err(wgpu::SurfaceError::Lost) => viewport.resize(viewport.size),
+							Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
+							Err(e) => eprintln!("{:?}", e),
+						};
+					}
+				}
+				Event::MainEventsCleared => {
+					for (_, window) in &self.windows {
+						window.request_redraw();
+					}
+				}
+				_ => (),
+			}
 		});
 	}
 }
@@ -102,13 +101,13 @@ impl Default for App {
 	}
 }
 
-#[derive(Debug)]
 struct Viewport {
 	surface: wgpu::Surface,
 	device: wgpu::Device,
 	queue: wgpu::Queue,
 	config: wgpu::SurfaceConfiguration,
 	size: winit::dpi::PhysicalSize<u32>,
+	render: Box<dyn Fn() -> Result<(), wgpu::SurfaceError>>,
 }
 
 impl Viewport {
@@ -168,6 +167,8 @@ impl Viewport {
 			self.surface.configure(&self.device, &self.config);
 		}
 	}
+
+	pub fn set_render_fn(f: impl Fn() -> Result<(), wgpu::SurfaceError>) {}
 
 	fn render(&self) -> Result<(), wgpu::SurfaceError> {
 		let output = self.surface.get_current_texture()?;
