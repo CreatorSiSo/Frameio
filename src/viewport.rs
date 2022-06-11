@@ -44,7 +44,7 @@ const QUAD_INDICES: &[u16] = &[
 ];
 
 #[derive(Debug)]
-pub struct Viewport {
+pub struct SurfaceState {
 	surface: wgpu::Surface,
 	device: wgpu::Device,
 	queue: wgpu::Queue,
@@ -55,7 +55,7 @@ pub struct Viewport {
 	meshes: Vec<Mesh>,
 }
 
-impl Viewport {
+impl SurfaceState {
 	pub async fn new(window: &Window) -> Self {
 		// The instance is a handle to the GPU
 		// Backends::all ==> Vulkan | Metal | DX12 | Browser WebGPU

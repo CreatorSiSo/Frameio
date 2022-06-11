@@ -4,13 +4,13 @@ use winit::{
 	window::{Window, WindowBuilder},
 };
 
-use crate::viewport::Viewport;
+use crate::viewport::SurfaceState;
 
 #[derive(Debug)]
 pub struct App {
 	event_loop: EventLoop<()>,
 	window: Window,
-	viewport: Viewport,
+	surface_state: SurfaceState,
 }
 
 impl App {
@@ -21,12 +21,12 @@ impl App {
 		let window = WindowBuilder::new().build(&event_loop).unwrap();
 		window.set_title(format!("{}: {:?}", window_name, window.id()).as_str());
 
-		let viewport = Viewport::new(&window).await;
+		let viewport = SurfaceState::new(&window).await;
 
 		Self {
 			event_loop,
 			window,
-			viewport,
+			surface_state: viewport,
 		}
 	}
 
@@ -38,7 +38,7 @@ impl App {
 				Event::WindowEvent { ref event, .. } => {
 					match event {
 						WindowEvent::CursorMoved { position, .. } => {
-							self.viewport.cursor_pos = *position;
+							self.surface_state.cursor_pos = *position;
 						}
 						WindowEvent::CloseRequested
 						| WindowEvent::KeyboardInput {
@@ -51,18 +51,18 @@ impl App {
 							..
 						} => *control_flow = ControlFlow::Exit,
 						WindowEvent::Resized(physical_size) => {
-							self.viewport.resize(*physical_size);
+							self.surface_state.resize(*physical_size);
 						}
 						WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-							self.viewport.resize(**new_inner_size)
+							self.surface_state.resize(**new_inner_size)
 						}
 						_ => (),
 					};
 				}
 				Event::RedrawRequested(_window_id) => {
-					match self.viewport.render() {
+					match self.surface_state.render() {
 						Ok(_) => (),
-						Err(wgpu::SurfaceError::Lost) => self.viewport.resize(self.viewport.size),
+						Err(wgpu::SurfaceError::Lost) => self.surface_state.resize(self.surface_state.size),
 						Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
 						Err(e) => eprintln!("{:?}", e),
 					};
