@@ -3,55 +3,44 @@ use winit::{dpi::PhysicalPosition, window::Window};
 
 use crate::buffers::Vertex;
 
-const _TRI: &[Vertex] = &[
-	Vertex {
-		// center top
-		position: [0.0, 1.0, 0.0],
-		color: [1.0, 0.0, 0.0],
-	},
-	Vertex {
-		// left bottom
-		position: [-1.0, -1.0, 0.0],
-		color: [0.0, 1.0, 0.0],
-	},
-	Vertex {
-		// right bottom
-		position: [1.0, -1.0, 0.0],
-		color: [0.0, 0.0, 1.0],
-	},
+#[derive(Debug)]
+struct Mesh {
+	num_vertices: u32,
+	vertex_buffer: wgpu::Buffer,
+	index_buffer: wgpu::Buffer,
+}
+
+#[rustfmt::skip]
+const TRI_VERTICES: &[Vertex] = &[
+  // center top
+	Vertex { position: [0.0, 0.8, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
+  // left bottom
+	Vertex { position: [-0.8, -0.8, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
+  // right bottom
+	Vertex { position: [0.8, -0.8, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
 ];
 
-const QUAD: &[Vertex] = &[
-	Vertex {
-		// left top
-		position: [-1.0, 1.0, 0.0],
-		color: [0.5, 0.5, 0.0],
-	},
-	Vertex {
-		// right bottom
-		position: [1.0, -1.0, 0.0],
-		color: [0.0, 0.0, 1.0],
-	},
-	Vertex {
-		// right top
-		position: [1.0, 1.0, 0.0],
-		color: [0.5, 0.0, 0.5],
-	},
-	Vertex {
-		// left top
-		position: [-1.0, 1.0, 0.0],
-		color: [0.5, 0.5, 0.0],
-	},
-	Vertex {
-		// left bottom
-		position: [-1.0, -1.0, 0.0],
-		color: [0.0, 1.0, 0.0],
-	},
-	Vertex {
-		// right bottom
-		position: [1.0, -1.0, 0.0],
-		color: [0.0, 0.0, 1.0],
-	},
+#[rustfmt::skip]
+const TRI_INDICES: &[u16] = &[
+  0, 1, 2
+];
+
+#[rustfmt::skip]
+const QUAD_VERTICES: &[Vertex] = &[
+  // left top
+	Vertex { position: [-1.0, 1.0, 0.0], color: [0.5, 0.5, 0.0, 1.0] },
+  // left bottom
+	Vertex { position: [-1.0, -1.0, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
+  // right bottom
+	Vertex { position: [1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
+  // right top
+	Vertex { position: [1.0, 1.0, 0.0], color: [0.5, 0.0, 0.5, 1.0] },
+];
+
+#[rustfmt::skip]
+const QUAD_INDICES: &[u16] = &[
+  0, 1, 2,
+  3, 0, 2
 ];
 
 #[derive(Debug)]
@@ -63,7 +52,7 @@ pub struct Viewport {
 	pub(crate) size: winit::dpi::PhysicalSize<u32>,
 	pub(crate) cursor_pos: PhysicalPosition<f64>,
 	render_pipeline: wgpu::RenderPipeline,
-	vertex_buffer: wgpu::Buffer,
+	meshes: Vec<Mesh>,
 }
 
 impl Viewport {
@@ -153,11 +142,34 @@ impl Viewport {
 			..render_pipeline_desc
 		});
 
-		let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-			label: Some("Triangle Vertex Buffer"),
-			usage: BufferUsages::VERTEX,
-			contents: bytemuck::cast_slice(QUAD),
-		});
+		let models = vec![
+			Mesh {
+				num_vertices: QUAD_INDICES.len() as u32,
+				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+					label: Some("Quad Vertex Buffer"),
+					usage: BufferUsages::VERTEX,
+					contents: bytemuck::cast_slice(QUAD_VERTICES),
+				}),
+				index_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+					label: Some("Quad Index Buffer"),
+					usage: BufferUsages::INDEX,
+					contents: bytemuck::cast_slice(QUAD_INDICES),
+				}),
+			},
+			Mesh {
+				num_vertices: TRI_INDICES.len() as u32,
+				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+					label: Some("Triangle Vertex Buffer"),
+					usage: BufferUsages::VERTEX,
+					contents: bytemuck::cast_slice(TRI_VERTICES),
+				}),
+				index_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+					label: Some("Triangle Index Buffer"),
+					usage: BufferUsages::INDEX,
+					contents: bytemuck::cast_slice(TRI_INDICES),
+				}),
+			},
+		];
 
 		Self {
 			surface,
@@ -167,7 +179,7 @@ impl Viewport {
 			size,
 			cursor_pos: PhysicalPosition::default(),
 			render_pipeline,
-			vertex_buffer,
+			meshes: models,
 		}
 	}
 
@@ -199,8 +211,8 @@ impl Viewport {
 					resolve_target: None,
 					ops: wgpu::Operations {
 						load: wgpu::LoadOp::Clear(wgpu::Color {
-							r: self.cursor_pos.x / self.size.width as f64,
-							g: self.cursor_pos.y / self.size.height as f64,
+							r: 1.0,
+							g: 0.0,
 							b: 1.0,
 							a: 1.0,
 						}),
@@ -211,8 +223,12 @@ impl Viewport {
 			});
 
 			render_pass.set_pipeline(&self.render_pipeline);
-			render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
-			render_pass.draw(0..QUAD.len() as u32, 0..1);
+
+			for mesh in &self.meshes {
+				render_pass.set_vertex_buffer(0, mesh.vertex_buffer.slice(..));
+				render_pass.set_index_buffer(mesh.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+				render_pass.draw_indexed(0..mesh.num_vertices, 0, 0..1);
+			}
 		}
 
 		self.queue.submit(std::iter::once(encoder.finish()));
