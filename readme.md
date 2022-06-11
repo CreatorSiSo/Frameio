@@ -38,3 +38,7 @@ Component based ui-framework for Rust inspired by Vue.
   - [ ] Execute shaders for each render-node
 - Composition (GPU)
   - [ ] Combine clip
+
+## Todo
+
+- add license file
