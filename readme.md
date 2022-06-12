@@ -42,7 +42,6 @@ Component based ui-framework for Rust inspired by Vue.
 
 ## Todo
 
-- [ ] Add license file
 - [ ] API for drawing
   - [ ] get surface/context
   - [ ] draw_quad()
