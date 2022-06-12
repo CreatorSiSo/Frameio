@@ -1,47 +1,7 @@
 use wgpu::{util::DeviceExt, BufferUsages};
 use winit::{dpi::PhysicalPosition, window::Window};
 
-use crate::buffers::Vertex;
-
-#[derive(Debug)]
-struct Mesh {
-	num_vertices: u32,
-	vertex_buffer: wgpu::Buffer,
-	index_buffer: wgpu::Buffer,
-}
-
-#[rustfmt::skip]
-const TRI_VERTICES: &[Vertex] = &[
-  // center top
-	Vertex { position: [0.0, 0.8, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
-  // left bottom
-	Vertex { position: [-0.8, -0.8, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
-  // right bottom
-	Vertex { position: [0.8, -0.8, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-];
-
-#[rustfmt::skip]
-const TRI_INDICES: &[u16] = &[
-  0, 1, 2
-];
-
-#[rustfmt::skip]
-const QUAD_VERTICES: &[Vertex] = &[
-  // left top
-	Vertex { position: [-1.0, 1.0, 0.0], color: [0.5, 0.5, 0.0, 1.0] },
-  // left bottom
-	Vertex { position: [-1.0, -1.0, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
-  // right bottom
-	Vertex { position: [1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-  // right top
-	Vertex { position: [1.0, 1.0, 0.0], color: [0.5, 0.0, 0.5, 1.0] },
-];
-
-#[rustfmt::skip]
-const QUAD_INDICES: &[u16] = &[
-  0, 1, 2,
-  3, 0, 2
-];
+use crate::{mesh::*, vertex::*};
 
 #[derive(Debug)]
 pub struct SurfaceState {
@@ -52,7 +12,7 @@ pub struct SurfaceState {
 	pub(crate) size: winit::dpi::PhysicalSize<u32>,
 	pub(crate) cursor_pos: PhysicalPosition<f64>,
 	render_pipeline: wgpu::RenderPipeline,
-	meshes: Vec<Mesh>,
+	meshes: Vec<MeshBuffer>,
 }
 
 impl SurfaceState {
@@ -142,8 +102,8 @@ impl SurfaceState {
 			..render_pipeline_desc
 		});
 
-		let models = vec![
-			Mesh {
+		let meshes = vec![
+			MeshBuffer {
 				num_vertices: QUAD_INDICES.len() as u32,
 				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
 					label: Some("Quad Vertex Buffer"),
@@ -156,7 +116,7 @@ impl SurfaceState {
 					contents: bytemuck::cast_slice(QUAD_INDICES),
 				}),
 			},
-			Mesh {
+			MeshBuffer {
 				num_vertices: TRI_INDICES.len() as u32,
 				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
 					label: Some("Triangle Vertex Buffer"),
@@ -179,7 +139,7 @@ impl SurfaceState {
 			size,
 			cursor_pos: PhysicalPosition::default(),
 			render_pipeline,
-			meshes: models,
+			meshes,
 		}
 	}
 

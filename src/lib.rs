@@ -1,5 +1,6 @@
 mod app;
-mod buffers;
+mod mesh;
+mod vertex;
 mod viewport;
 
 pub mod prelude {
