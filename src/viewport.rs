@@ -12,7 +12,7 @@ pub struct SurfaceState {
 	pub(crate) size: winit::dpi::PhysicalSize<u32>,
 	pub(crate) cursor_pos: PhysicalPosition<f64>,
 	render_pipeline: wgpu::RenderPipeline,
-	mesh_buffers: Vec<MeshBuffer>,
+	mesh_buffer: MeshBuffer,
 }
 
 impl SurfaceState {
@@ -102,34 +102,28 @@ impl SurfaceState {
 			..render_pipeline_desc
 		});
 
-		let mesh_buffers = vec![
-			MeshBuffer {
-				num_vertices: QUAD_INDICES.len() as u32,
-				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-					label: Some("Quad Vertex Buffer"),
-					usage: BufferUsages::VERTEX,
-					contents: bytemuck::cast_slice(QUAD_VERTICES),
-				}),
-				index_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-					label: Some("Quad Index Buffer"),
-					usage: BufferUsages::INDEX,
-					contents: bytemuck::cast_slice(QUAD_INDICES),
-				}),
-			},
-			MeshBuffer {
-				num_vertices: TRI_INDICES.len() as u32,
-				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-					label: Some("Triangle Vertex Buffer"),
-					usage: BufferUsages::VERTEX,
-					contents: bytemuck::cast_slice(TRI_VERTICES),
-				}),
-				index_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-					label: Some("Triangle Index Buffer"),
-					usage: BufferUsages::INDEX,
-					contents: bytemuck::cast_slice(TRI_INDICES),
-				}),
-			},
-		];
+		let quad1 = Mesh::new_quad(1.0, 1.0, [1.0, 0.5, 0.25, 1.0]);
+		println!("{:?}", quad1.indices);
+
+		let quad2 = Mesh::new_quad(-1.0, -1.0, [0.25, 0.5, 1.0, 1.0]);
+		println!("{:?}", quad2.indices);
+
+		let batch = Mesh::make_batched(vec![quad1, quad2]);
+		println!("{:?}", batch.indices);
+
+		let mesh_buffer = MeshBuffer {
+			num_vertices: batch.indices.len() as u32,
+			vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+				label: Some("Batched Vertex Buffer"),
+				usage: BufferUsages::VERTEX,
+				contents: bytemuck::cast_slice(batch.vertices.as_slice()),
+			}),
+			index_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+				label: Some("Batched Index Buffer"),
+				usage: BufferUsages::INDEX,
+				contents: bytemuck::cast_slice(batch.indices.as_slice()),
+			}),
+		};
 
 		Self {
 			surface,
@@ -139,7 +133,7 @@ impl SurfaceState {
 			size,
 			cursor_pos: PhysicalPosition::default(),
 			render_pipeline,
-			mesh_buffers,
+			mesh_buffer,
 		}
 	}
 
@@ -184,14 +178,12 @@ impl SurfaceState {
 
 			render_pass.set_pipeline(&self.render_pipeline);
 
-			for mesh_buffer in &self.mesh_buffers {
-				render_pass.set_vertex_buffer(0, mesh_buffer.vertex_buffer.slice(..));
-				render_pass.set_index_buffer(
-					mesh_buffer.index_buffer.slice(..),
-					wgpu::IndexFormat::Uint16,
-				);
-				render_pass.draw_indexed(0..mesh_buffer.num_vertices, 0, 0..1);
-			}
+			render_pass.set_vertex_buffer(0, self.mesh_buffer.vertex_buffer.slice(..));
+			render_pass.set_index_buffer(
+				self.mesh_buffer.index_buffer.slice(..),
+				wgpu::IndexFormat::Uint16,
+			);
+			render_pass.draw_indexed(0..self.mesh_buffer.num_vertices, 0, 0..1);
 		}
 
 		self.queue.submit(std::iter::once(encoder.finish()));

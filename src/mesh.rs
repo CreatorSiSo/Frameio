@@ -7,31 +7,51 @@ pub struct MeshBuffer {
 	pub index_buffer: wgpu::Buffer,
 }
 
-#[derive(Debug, Default, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Mesh {
-	vertices: Vec<Vertex>,
-	indices: Vec<Index>,
+	pub vertices: Vec<Vertex>,
+	pub indices: Vec<Index>,
 }
 
 impl Mesh {
-	/// Combines multiple meshes into one batched mesh.
-	pub fn new_batched(meshes: Vec<Mesh>) -> Mesh {
+	/// Creates a new 2d quad mesh.
+	pub fn new_quad(width: f32, height: f32, color: [f32; 4]) -> Self {
 		Mesh {
-			vertices: meshes
-				.iter()
-				.flat_map(|mesh| mesh.vertices.iter().cloned())
-				.collect(),
-			indices: {
-				let first_length = meshes[0].vertices.len();
-				meshes
-					.iter()
-					// TODO: Maybe throw an error if casting len() -> usize to a u16 or u32 results in a wrap around
-					// This will be fine if the mesh does not have over 65535 (u16) or 4294967295 (u32) vertices
-					.map(|mesh| (&mesh.indices, (mesh.vertices.len() - first_length) as Index))
-					.flat_map(|(indices, offset)| indices.into_iter().map(move |index| index + offset))
-					.collect()
-			},
+			#[rustfmt::skip]
+			vertices: vec![
+				// left top
+				Vertex { position: [0.0,   height, 0.], color },
+				// left bottom
+				Vertex { position: [0.0,   0.0,    0.], color },
+				// right bottom
+				Vertex { position: [width, 0.0,    0.], color },
+				// right top
+				Vertex { position: [width, height, 0.], color },
+			],
+			#[rustfmt::skip]
+			indices: vec![
+				0, 1, 2,
+				3, 0, 2,
+			],
 		}
+	}
+
+	/// Combines multiple meshes into one batched mesh.
+	pub fn make_batched(meshes: Vec<Mesh>) -> Mesh {
+		meshes
+			.iter()
+			.cloned()
+			.fold(Mesh::default(), |mut combined, mut current| {
+				combined.indices.append(
+					&mut current
+						.indices
+						.iter()
+						.map(|index: &Index| index + combined.vertices.len() as Index)
+						.collect::<Vec<Index>>(),
+				);
+				combined.vertices.append(&mut current.vertices);
+				combined
+			})
 	}
 }
 
@@ -40,12 +60,12 @@ mod test {
 	use super::*;
 
 	#[test]
-	fn test_new_batched() {
+	fn test_make_batched() {
 		let mesh_red = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
-				Vertex { position: [-0.5, 0.5, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
-				Vertex { position: [-0.5, -0.5, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
+				Vertex { position: [-0.5, 0.5, 0.], color: [1., 0., 0., 1.] },
+				Vertex { position: [-0.5, -0.5, 0.], color: [1., 0., 0., 1.] },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -57,10 +77,10 @@ mod test {
 		let mesh_blue = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
-				Vertex { position: [-1.0, 1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-				Vertex { position: [-1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-				Vertex { position: [1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-				Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
+				Vertex { position: [-1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [-1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -69,34 +89,127 @@ mod test {
 			],
 		};
 
-		let batched_mesh = Mesh::new_batched(vec![mesh_red, mesh_blue]);
+		let expected_mesh = Mesh {
+			#[rustfmt::skip]
+			vertices: vec![
+				// Red
+				Vertex { position: [-0.5, 0.5, 0.], color: [1., 0., 0., 1.] },
+				Vertex { position: [-0.5, -0.5, 0.], color: [1., 0., 0., 1.] },
+
+				// Blue
+				Vertex { position: [-1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [-1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
+			],
+			#[rustfmt::skip]
+			indices: vec![
+				// Red
+					0, 1,
+					1, 0,
+
+				// Blue
+					2, 3, 4,
+					5, 2, 4,
+			],
+		};
+
+		assert_eq!(Mesh::make_batched(vec![mesh_red, mesh_blue]), expected_mesh);
+	}
+
+	#[test]
+	fn test_make_batched_quads() {
+		let quad_mesh = Mesh::new_quad(3.0, 2.0, [0., 0., 0., 1.]);
+
+		let batched_mesh = Mesh::make_batched(vec![quad_mesh.clone(), quad_mesh.clone(), quad_mesh]);
+
+		let expected_mesh = Mesh {
+			#[rustfmt::skip]
+			vertices: vec![
+				Vertex { position: [0.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [0.0, 0.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [3.0, 0.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [3.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+
+				Vertex { position: [0.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [0.0, 0.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [3.0, 0.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [3.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+
+				Vertex { position: [0.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [0.0, 0.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [3.0, 0.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [3.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+			],
+			#[rustfmt::skip]
+			indices: vec![
+				0, 1, 2,
+				3, 0, 2,
+
+				4, 5, 6,
+				7, 4, 6,
+
+				8, 9, 10,
+				11, 8, 10,
+			],
+		};
+
+		assert_eq!(batched_mesh, expected_mesh);
+	}
+
+	#[test]
+	fn test_new_quad() {
+		let quad_mesh = Mesh::new_quad(3.0, 2.0, [0.45, 1.0, 0.2, 1.]);
 
 		assert_eq!(
-			batched_mesh,
+			quad_mesh,
 			Mesh {
 				#[rustfmt::skip]
 				vertices: vec![
-					// Red
-					Vertex { position: [-0.5, 0.5, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
-					Vertex { position: [-0.5, -0.5, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
-
-					// Blue
-					Vertex { position: [-1.0, 1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-					Vertex { position: [-1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-					Vertex { position: [1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-					Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
+					Vertex { position: [0.0, 2.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
+					Vertex { position: [0.0, 0.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
+					Vertex { position: [3.0, 0.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
+					Vertex { position: [3.0, 2.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
 				],
 				#[rustfmt::skip]
 				indices: vec![
-					// Red
-						0, 1,
-						1, 0,
-
-					// Blue
-						2, 3, 4,
-						5, 2, 4,
+					0, 1, 2,
+					3, 0, 2,
 				],
 			}
 		)
 	}
 }
+
+// #[rustfmt::skip]
+// pub const TRI_VERTICES: &[Vertex] = &[
+//   // center top
+// 	Vertex { position: [0.0, 0.8, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
+//   // left bottom
+// 	Vertex { position: [-0.8, -0.8, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
+//   // right bottom
+// 	Vertex { position: [0.8, -0.8, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
+// ];
+
+// #[rustfmt::skip]
+// pub const TRI_INDICES: &[Index] = &[
+//   0, 1, 2
+// ];
+
+// #[rustfmt::skip]
+// pub const QUAD_VERTICES: &[Vertex] = &[
+//   // left top
+// 	Vertex { position: [-1.0, 1.0, 0.0], color: [0.5, 0.5, 0.0, 1.0] },
+//   // left bottom
+// 	Vertex { position: [-1.0, -1.0, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
+//   // right bottom
+// 	Vertex { position: [1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
+//   // right top
+// 	Vertex { position: [1.0, 1.0, 0.0], color: [0.5, 0.0, 0.5, 1.0] },
+// ];
+
+// #[rustfmt::skip]
+// pub const QUAD_INDICES: &[Index] = &[
+//   0, 1, 2,
+//   3, 0, 2
+// ];

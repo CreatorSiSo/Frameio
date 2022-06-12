@@ -31,36 +31,3 @@ impl Vertex {
 		}
 	}
 }
-
-#[rustfmt::skip]
-pub const TRI_VERTICES: &[Vertex] = &[
-  // center top
-	Vertex { position: [0.0, 0.8, 0.0], color: [1.0, 0.0, 0.0, 1.0] },
-  // left bottom
-	Vertex { position: [-0.8, -0.8, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
-  // right bottom
-	Vertex { position: [0.8, -0.8, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-];
-
-#[rustfmt::skip]
-pub const TRI_INDICES: &[Index] = &[
-  0, 1, 2
-];
-
-#[rustfmt::skip]
-pub const QUAD_VERTICES: &[Vertex] = &[
-  // left top
-	Vertex { position: [-1.0, 1.0, 0.0], color: [0.5, 0.5, 0.0, 1.0] },
-  // left bottom
-	Vertex { position: [-1.0, -1.0, 0.0], color: [0.0, 1.0, 0.0, 1.0] },
-  // right bottom
-	Vertex { position: [1.0, -1.0, 0.0], color: [0.0, 0.0, 1.0, 1.0] },
-  // right top
-	Vertex { position: [1.0, 1.0, 0.0], color: [0.5, 0.0, 0.5, 1.0] },
-];
-
-#[rustfmt::skip]
-pub const QUAD_INDICES: &[Index] = &[
-  0, 1, 2,
-  3, 0, 2
-];
