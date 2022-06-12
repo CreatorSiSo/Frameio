@@ -1,7 +1,7 @@
-use wgpu::{util::DeviceExt, BufferUsages};
+use wgpu::{util::DeviceExt, BufferUsages, ShaderStages};
 use winit::{dpi::PhysicalPosition, window::Window};
 
-use crate::{mesh::*, vertex::*};
+use crate::{color::Color, mesh::*, vertex::*};
 
 #[derive(Debug)]
 pub struct SurfaceState {
@@ -13,6 +13,9 @@ pub struct SurfaceState {
 	pub(crate) cursor_pos: PhysicalPosition<f64>,
 	render_pipeline: wgpu::RenderPipeline,
 	mesh_buffer: MeshBuffer,
+	frag_bind_group: wgpu::BindGroup,
+	colors_buffer: wgpu::Buffer,
+	colors: Vec<Color>,
 }
 
 impl SurfaceState {
@@ -60,9 +63,45 @@ impl SurfaceState {
 			source: wgpu::ShaderSource::Wgsl(include_str!("test.wgsl").into()),
 		});
 
+		let frag_bind_group_layout =
+			device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+				label: Some("Fragment Bind Group Layout"),
+				entries: &[wgpu::BindGroupLayoutEntry {
+					binding: 0,
+					visibility: ShaderStages::FRAGMENT,
+					ty: wgpu::BindingType::Buffer {
+						ty: wgpu::BufferBindingType::Uniform,
+						has_dynamic_offset: false,
+						min_binding_size: None,
+					},
+					count: None,
+				}],
+			});
+
+		let colors: Vec<Color> = vec![
+			[1.0, 0.0, 0.0, 1.0],
+			[0.0, 1.0, 0.0, 1.0],
+			[0.0, 0.0, 1.0, 1.0],
+		];
+
+		let colors_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+			label: Some("Colors Buffer"),
+			contents: bytemuck::cast_slice(colors.as_slice()),
+			usage: wgpu::BufferUsages::COPY_DST | wgpu::BufferUsages::UNIFORM,
+		});
+
+		let frag_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+			label: Some("Fragment Bind Group"),
+			layout: &frag_bind_group_layout,
+			entries: &[wgpu::BindGroupEntry {
+				binding: 0,
+				resource: colors_buffer.as_entire_binding(),
+			}],
+		});
+
 		let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
 			label: Some("Render Pipeline Layout"),
-			bind_group_layouts: &[],
+			bind_group_layouts: &[&frag_bind_group_layout],
 			push_constant_ranges: &[],
 		});
 
@@ -102,14 +141,10 @@ impl SurfaceState {
 			..render_pipeline_desc
 		});
 
-		let quad1 = Mesh::new_quad(1.0, 1.0, [1.0, 0.5, 0.25, 1.0]);
-		println!("{:?}", quad1.indices);
-
-		let quad2 = Mesh::new_quad(-1.0, -1.0, [0.25, 0.5, 1.0, 1.0]);
-		println!("{:?}", quad2.indices);
-
+		let quad1 = Mesh::new_quad(1.0, 1.0, 0);
+		let quad2 = Mesh::new_quad(-1.0, -1.0, 2);
 		let batch = Mesh::make_batched(vec![quad1, quad2]);
-		println!("{:?}", batch.indices);
+		println!("{batch:#?}");
 
 		let mesh_buffer = MeshBuffer {
 			num_vertices: batch.indices.len() as u32,
@@ -134,6 +169,9 @@ impl SurfaceState {
 			cursor_pos: PhysicalPosition::default(),
 			render_pipeline,
 			mesh_buffer,
+			frag_bind_group,
+			colors_buffer,
+			colors,
 		}
 	}
 
@@ -146,7 +184,7 @@ impl SurfaceState {
 		}
 	}
 
-	pub fn render(&self) -> Result<(), wgpu::SurfaceError> {
+	pub fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
 		let output = self.surface.get_current_texture()?;
 		let view = output
 			.texture
@@ -178,6 +216,9 @@ impl SurfaceState {
 
 			render_pass.set_pipeline(&self.render_pipeline);
 
+			// render_pass.set_bind_group(0, bind_group, &[]);
+			render_pass.set_bind_group(0, &self.frag_bind_group, &[]);
+
 			render_pass.set_vertex_buffer(0, self.mesh_buffer.vertex_buffer.slice(..));
 			render_pass.set_index_buffer(
 				self.mesh_buffer.index_buffer.slice(..),
@@ -185,6 +226,22 @@ impl SurfaceState {
 			);
 			render_pass.draw_indexed(0..self.mesh_buffer.num_vertices, 0, 0..1);
 		}
+
+		// self.colors[0] = [0.0, 0.0, 0.0, 0.0];
+
+		// encoder.copy_buffer_to_buffer(
+		// 	&self
+		// 		.device
+		// 		.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+		// 			label: Some("New Colors Buffer"),
+		// 			contents: bytemuck::cast_slice(self.colors.as_slice()),
+		// 			usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_SRC,
+		// 		}),
+		// 	0,
+		// 	&self.colors_buffer,
+		// 	0,
+		// 	std::mem::size_of::<[Color; 3]>() as wgpu::BufferAddress,
+		// );
 
 		self.queue.submit(std::iter::once(encoder.finish()));
 		output.present();

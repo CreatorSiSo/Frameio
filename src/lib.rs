@@ -1,4 +1,5 @@
 mod app;
+mod color;
 mod mesh;
 mod vertex;
 mod viewport;

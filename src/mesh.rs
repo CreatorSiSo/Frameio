@@ -1,4 +1,4 @@
-use crate::vertex::*;
+use crate::{color::*, vertex::*};
 
 #[derive(Debug)]
 pub struct MeshBuffer {
@@ -15,18 +15,18 @@ pub struct Mesh {
 
 impl Mesh {
 	/// Creates a new 2d quad mesh.
-	pub fn new_quad(width: f32, height: f32, color: [f32; 4]) -> Self {
+	pub fn new_quad(width: f32, height: f32, color_id: ColorId) -> Self {
 		Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
 				// left top
-				Vertex { position: [0.0,   height, 0.], color },
+				Vertex { position: [0.0,   height, 0.], color_id },
 				// left bottom
-				Vertex { position: [0.0,   0.0,    0.], color },
+				Vertex { position: [0.0,   0.0,    0.], color_id },
 				// right bottom
-				Vertex { position: [width, 0.0,    0.], color },
+				Vertex { position: [width, 0.0,    0.], color_id },
 				// right top
-				Vertex { position: [width, height, 0.], color },
+				Vertex { position: [width, height, 0.], color_id },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -64,8 +64,8 @@ mod test {
 		let mesh_red = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
-				Vertex { position: [-0.5, 0.5, 0.], color: [1., 0., 0., 1.] },
-				Vertex { position: [-0.5, -0.5, 0.], color: [1., 0., 0., 1.] },
+				Vertex { position: [-0.5, 0.5, 0.], color_id: 0 },
+				Vertex { position: [-0.5, -0.5, 0.], color_id: 0 },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -77,10 +77,10 @@ mod test {
 		let mesh_blue = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
-				Vertex { position: [-1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
-				Vertex { position: [-1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
-				Vertex { position: [1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
-				Vertex { position: [1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [-1.0, 1.0, 0.], color_id: 0 },
+				Vertex { position: [-1.0, -1.0, 0.], color_id: 0 },
+				Vertex { position: [1.0, -1.0, 0.], color_id: 0 },
+				Vertex { position: [1.0, 1.0, 0.], color_id: 0 },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -93,14 +93,14 @@ mod test {
 			#[rustfmt::skip]
 			vertices: vec![
 				// Red
-				Vertex { position: [-0.5, 0.5, 0.], color: [1., 0., 0., 1.] },
-				Vertex { position: [-0.5, -0.5, 0.], color: [1., 0., 0., 1.] },
+				Vertex { position: [-0.5, 0.5, 0.], color_id: 0 },
+				Vertex { position: [-0.5, -0.5, 0.], color_id: 0 },
 
 				// Blue
-				Vertex { position: [-1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
-				Vertex { position: [-1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
-				Vertex { position: [1.0, -1.0, 0.], color: [0., 0., 1., 1.] },
-				Vertex { position: [1.0, 1.0, 0.], color: [0., 0., 1., 1.] },
+				Vertex { position: [-1.0, 1.0, 0.], color_id: 0 },
+				Vertex { position: [-1.0, -1.0, 0.], color_id: 0 },
+				Vertex { position: [1.0, -1.0, 0.], color_id: 0 },
+				Vertex { position: [1.0, 1.0, 0.], color_id: 0 },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -119,27 +119,27 @@ mod test {
 
 	#[test]
 	fn test_make_batched_quads() {
-		let quad_mesh = Mesh::new_quad(3.0, 2.0, [0., 0., 0., 1.]);
+		let quad_mesh = Mesh::new_quad(3.0, 2.0, 0);
 
 		let batched_mesh = Mesh::make_batched(vec![quad_mesh.clone(), quad_mesh.clone(), quad_mesh]);
 
 		let expected_mesh = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
-				Vertex { position: [0.0, 2.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [0.0, 0.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [3.0, 0.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [3.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [0.0, 2.0, 0.], color_id: 0 },
+				Vertex { position: [0.0, 0.0, 0.], color_id: 0 },
+				Vertex { position: [3.0, 0.0, 0.], color_id: 0 },
+				Vertex { position: [3.0, 2.0, 0.], color_id: 0 },
 
-				Vertex { position: [0.0, 2.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [0.0, 0.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [3.0, 0.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [3.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [0.0, 2.0, 0.], color_id: 0 },
+				Vertex { position: [0.0, 0.0, 0.], color_id: 0 },
+				Vertex { position: [3.0, 0.0, 0.], color_id: 0 },
+				Vertex { position: [3.0, 2.0, 0.], color_id: 0 },
 
-				Vertex { position: [0.0, 2.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [0.0, 0.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [3.0, 0.0, 0.], color: [0., 0., 0., 1.] },
-				Vertex { position: [3.0, 2.0, 0.], color: [0., 0., 0., 1.] },
+				Vertex { position: [0.0, 2.0, 0.], color_id: 0 },
+				Vertex { position: [0.0, 0.0, 0.], color_id: 0 },
+				Vertex { position: [3.0, 0.0, 0.], color_id: 0 },
+				Vertex { position: [3.0, 2.0, 0.], color_id: 0 },
 			],
 			#[rustfmt::skip]
 			indices: vec![
@@ -159,17 +159,17 @@ mod test {
 
 	#[test]
 	fn test_new_quad() {
-		let quad_mesh = Mesh::new_quad(3.0, 2.0, [0.45, 1.0, 0.2, 1.]);
+		let quad_mesh = Mesh::new_quad(3.0, 2.0, 0);
 
 		assert_eq!(
 			quad_mesh,
 			Mesh {
 				#[rustfmt::skip]
 				vertices: vec![
-					Vertex { position: [0.0, 2.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
-					Vertex { position: [0.0, 0.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
-					Vertex { position: [3.0, 0.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
-					Vertex { position: [3.0, 2.0, 0.], color: [0.45, 1.0, 0.2, 1.] },
+					Vertex { position: [0.0, 2.0, 0.], color_id: 0 },
+					Vertex { position: [0.0, 0.0, 0.], color_id: 0 },
+					Vertex { position: [3.0, 0.0, 0.], color_id: 0 },
+					Vertex { position: [3.0, 2.0, 0.], color_id: 0 },
 				],
 				#[rustfmt::skip]
 				indices: vec![

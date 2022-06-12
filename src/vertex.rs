@@ -1,3 +1,5 @@
+use crate::color::ColorId;
+
 /// Must be u16 or u32
 /// https://gpuweb.github.io/gpuweb/#enumdef-gpuindexformat
 pub type Index = u16;
@@ -6,28 +8,18 @@ pub type Index = u16;
 #[derive(Copy, Clone, bytemuck::Pod, bytemuck::Zeroable, Debug, Default, PartialEq)]
 pub struct Vertex {
 	pub position: [f32; 3],
-	pub color: [f32; 4],
+	pub color_id: ColorId,
 }
 
 impl Vertex {
+	const ATTRIBUTES: [wgpu::VertexAttribute; 2] =
+		wgpu::vertex_attr_array![0 => Float32x3, 1 => Uint32];
+
 	pub fn layout<'a>() -> wgpu::VertexBufferLayout<'a> {
 		wgpu::VertexBufferLayout {
 			array_stride: std::mem::size_of::<Vertex>() as wgpu::BufferAddress,
 			step_mode: wgpu::VertexStepMode::Vertex,
-			attributes: &[
-				// Position
-				wgpu::VertexAttribute {
-					format: wgpu::VertexFormat::Float32x3,
-					offset: 0,
-					shader_location: 0,
-				},
-				// Color
-				wgpu::VertexAttribute {
-					format: wgpu::VertexFormat::Float32x4,
-					offset: std::mem::size_of::<[f32; 4]>() as wgpu::BufferAddress,
-					shader_location: 1,
-				},
-			],
+			attributes: &Self::ATTRIBUTES,
 		}
 	}
 }

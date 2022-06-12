@@ -42,6 +42,9 @@ Component based ui-framework for Rust inspired by Vue.
 
 ## Todo
 
+- colors lookup
+  - make dynamically updatable/resizable
+  - push new colors to it when a new quad is created
 - [ ] API for drawing
   - [ ] get surface/context
   - [ ] draw_quad()
