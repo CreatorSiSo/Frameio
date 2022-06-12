@@ -7,7 +7,7 @@ pub struct MeshBuffer {
 	pub index_buffer: wgpu::Buffer,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Default, PartialEq)]
 pub struct Mesh {
 	vertices: Vec<Vertex>,
 	indices: Vec<Index>,
@@ -40,7 +40,7 @@ mod test {
 	use super::*;
 
 	#[test]
-	fn test_quad_batch_gen() {
+	fn test_new_batched() {
 		let mesh_red = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![

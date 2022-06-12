@@ -12,7 +12,7 @@ pub struct SurfaceState {
 	pub(crate) size: winit::dpi::PhysicalSize<u32>,
 	pub(crate) cursor_pos: PhysicalPosition<f64>,
 	render_pipeline: wgpu::RenderPipeline,
-	meshes: Vec<MeshBuffer>,
+	mesh_buffers: Vec<MeshBuffer>,
 }
 
 impl SurfaceState {
@@ -102,7 +102,7 @@ impl SurfaceState {
 			..render_pipeline_desc
 		});
 
-		let meshes = vec![
+		let mesh_buffers = vec![
 			MeshBuffer {
 				num_vertices: QUAD_INDICES.len() as u32,
 				vertex_buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
@@ -139,7 +139,7 @@ impl SurfaceState {
 			size,
 			cursor_pos: PhysicalPosition::default(),
 			render_pipeline,
-			meshes,
+			mesh_buffers,
 		}
 	}
 
@@ -184,10 +184,13 @@ impl SurfaceState {
 
 			render_pass.set_pipeline(&self.render_pipeline);
 
-			for mesh in &self.meshes {
-				render_pass.set_vertex_buffer(0, mesh.vertex_buffer.slice(..));
-				render_pass.set_index_buffer(mesh.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
-				render_pass.draw_indexed(0..mesh.num_vertices, 0, 0..1);
+			for mesh_buffer in &self.mesh_buffers {
+				render_pass.set_vertex_buffer(0, mesh_buffer.vertex_buffer.slice(..));
+				render_pass.set_index_buffer(
+					mesh_buffer.index_buffer.slice(..),
+					wgpu::IndexFormat::Uint16,
+				);
+				render_pass.draw_indexed(0..mesh_buffer.num_vertices, 0, 0..1);
 			}
 		}
 

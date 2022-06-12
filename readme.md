@@ -37,8 +37,13 @@ Component based ui-framework for Rust inspired by Vue.
       - [ ] https://madebyevan.com/shaders/fast-rounded-rectangle-shadows/
   - [ ] Execute shaders for each render-node
 - Composition (GPU)
-  - [ ] Combine clip
+  - [ ] Combine rendered textures of each clip_node into one for the entire viewport
+  - [ ] Viewport wide effects?
 
 ## Todo
 
-- add license file
+- [ ] Add license file
+- [ ] API for drawing
+  - [ ] get surface/context
+  - [ ] draw_quad()
+  - [ ] draw_quad_rounded()
