@@ -131,7 +131,7 @@ impl SurfaceState {
 		let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
 			fragment: Some(wgpu::FragmentState {
 				module: &shader,
-				entry_point: "fs_main",
+				entry_point: "fs_debug_uv",
 				targets: &[wgpu::ColorTargetState {
 					format: config.format,
 					blend: Some(wgpu::BlendState::REPLACE),
@@ -144,7 +144,6 @@ impl SurfaceState {
 		let quad1 = Mesh::new_quad(1.0, 1.0, 0);
 		let quad2 = Mesh::new_quad(-1.0, -1.0, 2);
 		let batch = Mesh::make_batched(vec![quad1, quad2]);
-		println!("{batch:#?}");
 
 		let mesh_buffer = MeshBuffer {
 			num_vertices: batch.indices.len() as u32,
