@@ -60,7 +60,7 @@ mod test {
 	use super::*;
 
 	#[test]
-	fn test_make_batched() {
+	fn make_batched() {
 		let mesh_red = Mesh {
 			#[rustfmt::skip]
 			vertices: vec![
@@ -118,7 +118,7 @@ mod test {
 	}
 
 	#[test]
-	fn test_make_batched_quads() {
+	fn make_batched_quads() {
 		let quad_mesh = Mesh::new_quad(3.0, 2.0, 0);
 
 		let batched_mesh = Mesh::make_batched(vec![quad_mesh.clone(), quad_mesh.clone(), quad_mesh]);
@@ -158,7 +158,7 @@ mod test {
 	}
 
 	#[test]
-	fn test_new_quad() {
+	fn new_quad() {
 		let quad_mesh = Mesh::new_quad(3.0, 2.0, 0);
 
 		assert_eq!(

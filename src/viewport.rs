@@ -58,11 +58,6 @@ impl SurfaceState {
 			present_mode: wgpu::PresentMode::Fifo,
 		};
 
-		let shader = device.create_shader_module(&wgpu::ShaderModuleDescriptor {
-			label: Some("Solid Color"),
-			source: wgpu::ShaderSource::Wgsl(include_str!("test.wgsl").into()),
-		});
-
 		let frag_bind_group_layout =
 			device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
 				label: Some("Fragment Bind Group Layout"),
@@ -105,7 +100,12 @@ impl SurfaceState {
 			push_constant_ranges: &[],
 		});
 
-		let render_pipeline_desc = wgpu::RenderPipelineDescriptor {
+		let shader = device.create_shader_module(&wgpu::ShaderModuleDescriptor {
+			label: Some("Solid Color"),
+			source: wgpu::ShaderSource::Wgsl(include_str!("test.wgsl").into()),
+		});
+
+		let render_pipeline_descriptor = wgpu::RenderPipelineDescriptor {
 			label: Some("Render Pipeline"),
 			layout: Some(&render_pipeline_layout),
 			vertex: wgpu::VertexState {
@@ -138,7 +138,7 @@ impl SurfaceState {
 					write_mask: wgpu::ColorWrites::ALL,
 				}],
 			}),
-			..render_pipeline_desc
+			..render_pipeline_descriptor
 		});
 
 		let quad1 = Mesh::new_quad(1.0, 1.0, 0);

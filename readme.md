@@ -42,6 +42,8 @@ Component based ui-framework for Rust inspired by Vue.
 
 ## Todo
 
+- transperancy
+- proper errors for renderer new function
 - colors lookup
   - make dynamically updatable/resizable
   - push new colors to it when a new quad is created
@@ -49,3 +51,69 @@ Component based ui-framework for Rust inspired by Vue.
   - [ ] get surface/context
   - [ ] draw_quad()
   - [ ] draw_quad_rounded()
+
+## Structure
+
+```js
+
+Renderer {
+	variables: [
+		device,
+		queue,
+		surface, // maybe support multiple surfaces
+		surface_config,
+		render_pipline?, // break up even more later to use multiple shaders
+		data_changed,
+	],
+	methods: {
+		new() => Self {
+			create interface; // https://gpuweb.github.io/gpuweb/#gpu-interface
+			create surface;
+			create adapter; // https://gpuweb.github.io/gpuweb/#gpu-adapter
+			create device, queue;
+			set initial surface size;
+			create surface_config;
+
+			return Self {
+				device,
+				queue,
+				surface,
+				surface_config,
+				render_pipline: None
+				should_rerender: true,
+			}
+		},
+
+		configure_pipline(&mut self) => Option<Error> {
+			create frag_bind_group_layout;
+			create frag_bind_group;
+			create render_pipeline_layout;
+			compile shader;
+			create render_pipeline_descriptor;
+			create render_pipeline;
+		}
+
+		set_mouse_position(&mut self) {}
+
+		update(&mut self) {
+			if some_condition {
+				create new_batched_mesh;
+				self.mesh_buffer = new_batched_mesh;
+			}
+		}
+
+		render(&self) {
+			create output;
+
+			if self.data_changed {
+				create frame_buffer;
+
+				self.data_changed = false;
+			}
+
+			output.present();
+		}
+	}
+}
+
+```
