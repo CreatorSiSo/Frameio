@@ -93,7 +93,7 @@ Renderer {
 			create render_pipeline;
 		}
 
-		set_mouse_position(&mut self) {}
+		set_mouse_position(&mut self, position: &PhysicalPosition) {}
 
 		update(&mut self) {
 			if some_condition {
@@ -103,15 +103,22 @@ Renderer {
 		}
 
 		render(&self) {
-			create output;
 
 			if self.data_changed {
-				create frame_buffer;
+				create output;
 
+				create encoder;
+				create render_pass;
+				set render_pipeline;
+				set vertex_buffer;
+				set index_buffer;
+				draw indexed;
+
+				submit to queue;
+				output.present();
 				self.data_changed = false;
 			}
 
-			output.present();
 		}
 	}
 }
