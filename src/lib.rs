@@ -1,6 +1,7 @@
 mod app;
 mod color;
 mod mesh;
+mod util;
 mod vertex;
 mod viewport;
 
