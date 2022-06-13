@@ -131,7 +131,7 @@ impl SurfaceState {
 		let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
 			fragment: Some(wgpu::FragmentState {
 				module: &shader,
-				entry_point: "fs_debug_uv",
+				entry_point: "fs_sdf_box",
 				targets: &[wgpu::ColorTargetState {
 					format: config.format,
 					blend: Some(wgpu::BlendState::REPLACE),
