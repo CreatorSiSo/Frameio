@@ -11,7 +11,7 @@ struct VertexOutput {
 }
 
 @group(0) @binding(0)
-var<uniform> colors: array<vec4<f32>, 64>;
+var<storage> colors: array<vec4<f32>, 64>;
 
 @vertex
 fn vs_main(vertex: VertexInput) -> VertexOutput {

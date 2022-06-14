@@ -64,6 +64,8 @@ impl App {
 					};
 				}
 				Event::RedrawRequested(_window_id) => {
+					self.renderer.update();
+
 					match self.renderer.render() {
 						Ok(_) => (),
 						Err(wgpu::SurfaceError::Lost) => self.renderer.reconfigure_surface(),

@@ -1,4 +1,51 @@
-use crate::{util::default, vertex::Vertex};
+use std::ops::Index;
+
+use crate::{color::Color, mesh::Mesh, util::default, vertex::Vertex};
+
+#[derive(Debug)]
+struct Lookup<T>
+where
+	T: PartialEq,
+{
+	store: Vec<T>,
+	ref_counts: Vec<u32>,
+	pub buffer: wgpu::Buffer,
+	pub changed: bool,
+}
+
+type LookupIndex = usize;
+
+impl<T> Lookup<T>
+where
+	T: PartialEq,
+{
+	pub fn new(device: &wgpu::Device, min_size: u64) -> Self {
+		let buffer = device.create_buffer(&wgpu::BufferDescriptor {
+			label: Some("Batched Quads Buffer"),
+			size: min_size * std::mem::size_of::<T>() as u64,
+			usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_DST,
+			mapped_at_creation: false,
+		});
+
+		Self {
+			buffer,
+			store: Vec::default(),
+			ref_counts: Vec::default(),
+			changed: true,
+		}
+	}
+
+	pub fn push(&mut self, queue: wgpu::Queue, value: T) -> LookupIndex {
+		match self.store.iter().position(|item| item == &value) {
+			Some(index) => index,
+			None => {
+				self.store.push(value);
+				self.ref_counts.push(1);
+				self.store.len() - 1
+			}
+		}
+	}
+}
 
 #[derive(Debug)]
 pub struct Renderer {
@@ -7,19 +54,21 @@ pub struct Renderer {
 	surface: wgpu::Surface, // TODO: maybe support multiple surfaces
 	surface_config: wgpu::SurfaceConfiguration,
 	render_pipeline: wgpu::RenderPipeline, // TODO: break up render_pipeline even more later on to use multiple shaders
+	batches: Vec<Mesh>,
+	colors: Lookup<Color>,
 }
 
 impl Renderer {
 	// TODO: Use custom Error
 	// TODO: Generalize with new<W: raw_window_handle::HasRawWindowHandle>(window: &W)
 	pub async fn new(window: &winit::window::Window) -> Self {
-		let instance = wgpu::Instance::new(wgpu::Backends::PRIMARY);
+		let instance = wgpu::Instance::new(wgpu::Backends::SECONDARY);
 
 		let surface = unsafe { instance.create_surface(window) };
 
 		let adapter = instance
 			.request_adapter(&wgpu::RequestAdapterOptions {
-				power_preference: wgpu::PowerPreference::default(),
+				power_preference: wgpu::PowerPreference::HighPerformance,
 				force_fallback_adapter: false,
 				compatible_surface: Some(&surface),
 			})
@@ -48,12 +97,16 @@ impl Renderer {
 
 		let render_pipeline = Self::new_render_pipline(&device, &surface_config);
 
+		let colors = Lookup::new(&device, 16);
+
 		Self {
 			device,
 			queue,
 			surface,
 			surface_config,
 			render_pipeline,
+			batches: Vec::default(),
+			colors,
 		}
 	}
 
@@ -67,10 +120,14 @@ impl Renderer {
 			push_constant_ranges: &[],
 		});
 
-		let shader = device.create_shader_module(&wgpu::include_wgsl!("test.wgsl"));
+		let shader_descriptor = wgpu::include_wgsl!("test.wgsl");
+		let shader = device.create_shader_module(&shader_descriptor);
 
 		device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-			label: Some("Render Pipeline"),
+			label: Some(&format!(
+				"{} Render Pipeline",
+				shader_descriptor.label.unwrap_or("Unnamed")
+			)),
 			layout: Some(&pipeline_layout),
 			vertex: wgpu::VertexState {
 				module: &shader,
@@ -111,7 +168,24 @@ impl Renderer {
 		self.surface.configure(&self.device, &self.surface_config);
 	}
 
-	pub fn _update(&mut self) {}
+	pub fn update(&mut self) {
+		if self.colors.changed {
+			let colors: &[Color] = &[
+				[1., 0., 0., 1.],
+				[0., 1., 0., 1.],
+				[0., 0., 1., 1.],
+				[1., 1., 0., 1.],
+				[0., 1., 1., 1.],
+				[1., 1., 1., 1.],
+			];
+			self
+				.queue
+				.write_buffer(&self.colors.buffer, 0, bytemuck::cast_slice(colors));
+
+			self.colors.changed = false;
+			println!("{:?}, wrote colors buffer", std::time::Instant::now())
+		}
+	}
 
 	pub fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
 		let output = self.surface.get_current_texture()?;
