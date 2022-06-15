@@ -1,9 +1,9 @@
-/// Taken from https://github.com/bevyengine/bevy/blob/b7d784de6e27c46cc42231e1dea94c3ba4de9463/crates/bevy_utils/src/default.rs
-///
+// Taken from https://github.com/bevyengine/bevy/blob/b7d784de6e27c46cc42231e1dea94c3ba4de9463/crates/bevy_utils/src/default.rs
+
 /// An ergonomic abbreviation for [`Default::default()`] to make initializing structs easier.
 /// This is especially helpful when combined with ["struct update syntax"](https://doc.rust-lang.org/book/ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax).
 /// ```
-/// use bevy_utils::default;
+/// use appio::utils::default;
 ///
 /// #[derive(Default)]
 /// struct Foo {
@@ -11,6 +11,7 @@
 ///   b: usize,
 ///   c: usize,
 /// }
+///
 ///
 /// // Normally you would initialize a struct with defaults using "struct update syntax"
 /// // combined with `Default::default()`. This example sets `Foo::bar` to 10 and the remaining

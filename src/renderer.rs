@@ -1,6 +1,4 @@
-use std::ops::Index;
-
-use crate::{color::Color, mesh::Mesh, util::default, vertex::Vertex};
+use crate::{color::Color, mesh::Mesh, utils::default, vertex::Vertex};
 
 #[derive(Debug)]
 struct Lookup<T>
