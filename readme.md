@@ -1,6 +1,6 @@
 # Appio
 
-Component based ui-framework for Rust inspired by Vue.
+Might become a component based ui-framework for Rust inspired by Vue at some point.
 
 ## Goals
 
